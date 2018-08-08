@@ -1,0 +1,12 @@
+# Aliases for Laravel
+alias arty='php artisan'
+alias cov='xdg-open storage/coverage/index.html'
+alias t='phpunit'
+alias unit='phpunit tests/Unit'
+alias u='phpunit tests/Unit'
+alias feature='phpunit tests/Feature'
+alias f='phpunit tests/Feature'
+alias homestead='function __homestead() { (cd ~/projects/Homestead && vagrant $*); unset -f __homestead; }; __homestead'
+alias exdebug='sudo mv /etc/php/7.1/mods-available/xdebug.ini.bak /etc/php/7.1/mods-available/xdebug.ini'
+alias dxdebug='sudo mv /etc/php/7.1/mods-available/xdebug.ini /etc/php/7.1/mods-available/xdebug.ini.bak'
+

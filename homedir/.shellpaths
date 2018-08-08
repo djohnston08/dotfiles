@@ -1,0 +1,16 @@
+#My Scripts
+export PATH=$PATH:.
+#export PATH=$PATH:~/.dotfiles/scripts
+
+# Composer
+export PATH="$HOME/.composer/vendor/bin:./vendor/bin:$PATH"
+
+# Node modules
+export PATH="./node_modules/.bin:$PATH"
+
+# GO
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$(go env GOPATH)/bin
+
+# Pip packages
+export PATH=$PATH:$HOME/.local/bin
