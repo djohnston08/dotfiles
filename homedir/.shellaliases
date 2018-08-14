@@ -17,7 +17,7 @@ alias to.code='cd ${MYCODE}'
 alias to.scratch='cd ${MYSCRATCH}'
 
 # alias to.devapps='cd ${MYDEVAPPS}'
-alias .f='cd ~/project/dotfiles'
+alias .f='cd $HOME/projects/dotfiles'
 
 
 #################################
@@ -51,6 +51,7 @@ alias ll='ls -al -h -p '
 alias xc='xclip -selection c'
 
 alias refresh='source ~/.zshrc'
+alias po='popd'
 
 # Setup alias to restart systemd-resolved
 alias vpndns='sudo service systemd-resolved restart'
