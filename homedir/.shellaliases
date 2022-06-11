@@ -1,21 +1,5 @@
 #!/bin/sh
 
-#########################################
-# Connectivity
-#alias ssh.host ='ssh user@host.net'
-
-#########################################
-# Commands to run apps
-
-#########################################
-# Commands to change dirs
-alias to.temp='cd ${MYTEMP}'
-alias to.downloads='cd ${MYDOWNLOADS}'
-alias to.dropbox='cd ~/Dropbox'
-alias to.docs='cd ${MYDOCUMENTS}'
-alias to.code='cd ${MYCODE}'
-alias to.scratch='cd ${MYSCRATCH}'
-
 # alias to.devapps='cd ${MYDEVAPPS}'
 alias .f='cd $HOME/projects/dotfiles'
 
@@ -29,31 +13,17 @@ alias vim='nvim'
 #############################
 # Utilities
 
-# recursive dos2unix in current directory
-alias dos2lf='dos2unix `find ./ -type f`'
-
-# Show network connections
-# Often useful to prefix with SUDO to see more system level network usage
-alias network.connections='lsof -l -i +L -R -V'
-alias network.established='lsof -l -i +L -R -V | grep ESTABLISHED'
-alias network.internalip="ifconfig en0 | egrep -o '([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)'"
-alias network.externalip='curl -s http://checkip.dyndns.org/ | sed "s/[a-zA-Z<>/ :]//g"'
-
-# Directory listings
-# LS_COLORS='no=01;37:fi=01;37:di=07;96:ln=01;36:pi=01;32:so=01;35:do=01;35:bd=01;33:cd=01;33:ex=01;31:mi=00;05;37:or=00;05;37:'
-# -G Add colors to ls
-# -l Long format
-# -h Short size suffixes (B, K, M, G, P)
-# -p Postpend slash to folders
 alias ls='ls -h -p '
 alias ll='ls -al -h -p '
 
+# Linux only (deps: xclip)
 alias xc='xclip -selection c'
 
-alias refresh='source ~/.zshrc'
+alias refresh='exec zsh'
 alias po='popd'
 
-# Setup alias to restart systemd-resolved
-alias vpndns='sudo service systemd-resolved restart'
+alias git='hub'
 
 set -o vi
+
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'

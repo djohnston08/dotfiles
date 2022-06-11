@@ -52,3 +52,11 @@ node_modules
 # PHP #
 #######
 vendor/
+
+.env.bak
+.env.cluster
+.env.local
+
+
+ksetup
+

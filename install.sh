@@ -26,6 +26,8 @@ if (( $? != 0 )); then
     nvm alias default $latest
 fi
 
+brew install mas
+
 CURRENTSHELL=$SHELL
 if [[ "$CURRENTSHELL" =~ "bash" ]]; then
     action "We have bash...setting up zsh"
@@ -57,6 +59,7 @@ fi
 
 ok "Oh My ZSH is all setup"
 
+.
 bot "Install z-zsh"
 if [[ ! -d "./z-zsh" ]]; then
   git clone https://github.com/sjl/z-zsh.git

@@ -35,6 +35,7 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
+Plugin 'kien/ctrlp.vim'
 Plugin 'justinmk/vim-sneak'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-surround'
@@ -234,6 +235,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Autocommands
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au BufWritePost *.php silent! !eval '[ -f ".git/hooks/ctags" ] && .git/hooks/ctags' &
 au BufRead,BufNewFile *.zcml set filetype=xml
 au BufRead,BufNewFile *.rb,*.rhtml set tabstop=2
 au BufRead,BufNewFile *.rb,*.rhtml set shiftwidth=2

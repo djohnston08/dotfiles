@@ -27,3 +27,4 @@ export GOPATH=$HOME/go
 #########################################################################
 # export FONTCONFIG_PATH=/opt/X11/lib/X11/fontconfig
 export NVM_DIR=~/.nvm
+    

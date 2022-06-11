@@ -192,6 +192,11 @@
   smudge = git media smudge %f
 
 [filter "lfs"]
-  clean = git-lfs clean %f
-  smudge = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
   required = true
+	process = git-lfs filter-process
+[init]
+	defaultBranch = master
+[url "https://djohnston08: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@github.com"]
+	insteadOf = https://github.com

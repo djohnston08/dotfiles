@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+GITHUB_USERNAME=""
+SYSTEM=$(uname -s)
+
+function setup_mac() {
+    echo "Lets setup homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    which git >/dev/null 2>&1
+    if (( $? != 0 )); then
+        echo "Don't have git.  Installing from homebrew"
+        brew install git
+    fi
+
+    echo "Creating projects directory"
+    mkdir $HOME/projects
+    cd $HOME/projects
+
+    # Checkout dotfiles
+    repo="$GITHUB_USERNAME/dotfiles.git"
+    git clone --recurse-submodules -j8 git@github.com:$repo
+
+    cd dotfiles
+    ./install.sh
+}
+
+# Get github username
+# Check for ssh key
+# If it exists, ask if it's been copied to github.  If not, display it and tell them to add
+# If it doesn't exist, create it and do the same as above
+
+if [[ "${SYSTEM}" == "Linux" ]]; then
+    echo "we have linux"
+    echo "Support coming soon"
+    # PS3='What type of system: '
+    # options=("Desktop" "Server")
+    # select opt in "${options[@]}"
+    # do
+    #     case $opt in 
+    #         "Desktop")
+    #             echo "You chose desktop setup"
+    #             # Insert logic here
+    #             break
+    #             ;;
+    #         "Server")
+    #             echo "Here comes a server"
+    #             # Insert logic here
+    #             break
+    #             ;;
+    #         *) echo "invalid choice"
+    #     esac
+    # done
+elif [[ "${SYSTEM}" == "Darwin" ]]; then
+    echo "got os x"
+else
+    echo "dont know what this is"
+fi
+
+# echo "do more stuff"
