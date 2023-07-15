@@ -27,3 +27,4 @@ alias git='hub'
 set -o vi
 
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
