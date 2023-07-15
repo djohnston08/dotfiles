@@ -47,6 +47,14 @@ function show_commits
     git show $commit
 }
 
+function checkout_master_or_main
+{
+    git checkout master 2>/dev/null
+    if (( $? != 0 )); then
+        git checkout main
+    fi
+}
+
 # Aliases
 alias g='git'
 compdef g=git
@@ -70,7 +78,8 @@ alias gca='git commit -v -a'
 compdef _git gca=git-commit
 alias gco='git checkout'
 compdef _git gco=git-checkout
-alias gcm='git checkout master'
+# alias gcm='git checkout master'
+alias gcm=checkout_master_or_main
 alias gb='git branch'
 compdef _git gb=git-branch
 alias gba='git branch -a'
