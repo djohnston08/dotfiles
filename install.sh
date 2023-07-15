@@ -15,7 +15,7 @@ hasMacFundamentals() {
 }
 
 installMacFundamentals() {
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/djohnston08/dotfiles/main/install-mac-fundamentals.sh)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/djohnston08/dotfiles/new/install-mac-fundamentals.sh)"
 }
 
 setupMac() {
@@ -24,6 +24,9 @@ setupMac() {
 		installMacFundamentals
 		return 0
 	}
+
+	echo "Install brew dependencies"
+	brew bundle
 }
 
  main() {
