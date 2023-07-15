@@ -1,7 +1,7 @@
 # Aliases for Laravel
 alias arty='sail artisan'
 alias cov='xdg-open storage/coverage/index.html'
-alias t='phpunit'
+# alias t='phpunit'
 alias unit='phpunit tests/Unit'
 alias u='phpunit tests/Unit'
 alias feature='phpunit tests/Feature'
