@@ -32,8 +32,6 @@ plugins=(colorize compleat dirpersist autojump git history cp kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
-source $HOME/.nvm/nvm.sh
-
 source ~/.zprofile
 
 if [ -d ~/local_configs ]; then
@@ -42,16 +40,8 @@ if [ -d ~/local_configs ]; then
     done
 fi
 
-autoload -U add-zsh-hook
-load-nvmrc() {
-  if [[ -f .nvmrc && -r .nvmrc ]]; then
-    nvm use &> /dev/null
-  elif [[ $(nvm version) != $(nvm version default)  ]]; then
-    nvm use default &> /dev/null
-  fi
-}
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
+# autoload -U add-zsh-hook
+# add-zsh-hook chpwd
 
 # Customize to your needs...
 unsetopt correct
@@ -62,8 +52,6 @@ fortune
 source $HOME/projects/dotfiles-new/headline.zsh-theme
 
 cdpath=($HOME/projects $GOPATH/src)
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/Users/djohnston/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -79,3 +67,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+export HOMEBREW_GITHUB_API_TOKEN=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

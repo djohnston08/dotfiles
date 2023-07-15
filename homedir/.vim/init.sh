@@ -32,6 +32,7 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'vim-airline/vim-airline'
+Plugin 'jaredgorski/spacecamp'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
@@ -47,7 +48,6 @@ Plugin 'suan/vim-instant-markdown'
 Plugin 'godlygeek/tabular'
 " language tools
 Plugin 'scrooloose/syntastic'
-Plugin 'millermedeiros/vim-esformatter'
 Plugin 'digitaltoad/vim-pug'
 " Typescript
 Plugin 'leafgarland/typescript-vim'
@@ -210,9 +210,9 @@ let b:match_ignorecase = 1
 " Custom Functions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Select range, then hit :SuperRetab($width) - by p0g and FallingCow
-function! SuperRetab(width) range
-    silent! exe a:firstline . ',' . a:lastline . 's/\v%(^ *)@<= {'. a:width .'}/\t/g'
-endfunction
+" function! SuperRetab(width) range
+"     silent! exe a:firstline . ',' . a:lastline . 's/\v%(^ *)@<= {'. a:width .'}/\t/g'
+" endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings
@@ -229,7 +229,7 @@ map ,n <plug>NERDTreeTabsToggle<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Useful abbrevs
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+" iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Autocommands
@@ -268,8 +268,8 @@ noremap <leader>p :set paste<CR>:put  *<CR>:set nopaste<CR>
 
 " esformatter
 " type \es to format
-nnoremap <silent> <leader>es :Esformatter<CR>
-vnoremap <silent> <leader>es :EsformatterVisual<CR>
+" nnoremap <silent> <leader>es :Esformatter<CR>
+" vnoremap <silent> <leader>es :EsformatterVisual<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTree

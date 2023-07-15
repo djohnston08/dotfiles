@@ -6,7 +6,7 @@ if has('gui_running')
 else
     set background=dark
 endif
-colorscheme solarized
+colorscheme spacecamp
 " syntax on " syntax highlighting on
 syntax enable
 let g:solarized_termtrans = 1
@@ -31,6 +31,7 @@ Plugin 'VundleVim/Vundle.vim'
 " Navigation (IDE frame)
 Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'jaredgorski/spacecamp'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-fugitive'
@@ -48,7 +49,6 @@ Plugin 'suan/vim-instant-markdown'
 Plugin 'godlygeek/tabular'
 " language tools
 Plugin 'scrooloose/syntastic'
-Plugin 'millermedeiros/vim-esformatter'
 Plugin 'digitaltoad/vim-pug'
 " Typescript
 Plugin 'leafgarland/typescript-vim'
