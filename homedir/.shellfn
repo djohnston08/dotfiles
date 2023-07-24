@@ -91,3 +91,14 @@ function curlhammer () {
   bot "done"
 }
 
+function hasSail() {
+    if [ -f sail ]; then
+        return 0
+    fi
+
+    if [ -f vendor/bin/sail ]; then
+        return 0
+    fi
+
+    return 1
+}

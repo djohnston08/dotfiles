@@ -1,6 +1,5 @@
 #My Scripts
 export PATH=$PATH:.
-#export PATH=$PATH:~/.dotfiles/scripts
 
 # Composer
 export PATH="$HOME/.composer/vendor/bin:./vendor/bin:$PATH"
@@ -21,8 +20,5 @@ export PATH=$PATH:$HOME/.local/bin
 
 # mysql-client installed via brew
 export PATH="/usr/local/opt/mysql-client/bin:$PATH"
-
-# flutter
-export PATH="$PATH:$HOME/development/flutter/bin"
 
 cdpath=($HOME/projects $GOPATH/src)

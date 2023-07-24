@@ -55,6 +55,14 @@ function checkout_master_or_main
     fi
 }
 
+function rebase_master_or_main
+{
+    git rebase master 2>/dev/null
+    if (( $? != 0 )); then
+        git rebase main
+    fi
+}
+
 # Aliases
 alias g='git'
 compdef g=git
@@ -138,7 +146,7 @@ alias gr='git rebase'
 compdef _git gr=git-rebase
 alias gri='git rebase -i'
 compdef _git gri=git-rebase
-alias grm='git rebase master'
+alias grm=rebase_master_or_main
 alias gsh='show_commits'
 compdef _git gsh=git-show
 

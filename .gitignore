@@ -19,3 +19,5 @@ homedir/.vim/bundle/vim-sneak/
 homedir/.vim/bundle/vim-surround/
 oh-my-zsh/
 z-zsh/
+.DS_Store
+

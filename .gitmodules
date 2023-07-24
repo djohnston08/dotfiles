@@ -1,9 +1,6 @@
-[submodule "homedir/.vim/bundle/Vundle.vim"]
-	path = homedir/.vim/bundle/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
-[submodule "SpaceCamp"]
-	path = SpaceCamp
-	url = https://github.com/jaredgorski/SpaceCamp.git
-[submodule "homedir/.vim/bundle/spacecamp"]
-	path = homedir/.vim/bundle/spacecamp
-	url = https://github.com/jaredgorski/SpaceCamp.git
+[submodule "ohmyzsh"]
+	path = ohmyzsh
+	url = https://github.com/ohmyzsh/ohmyzsh.git
+[submodule "vscode-php-debug"]
+	path = vscode-php-debug
+	url = https://github.com/xdebug/vscode-php-debug.git

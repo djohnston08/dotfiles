@@ -12,13 +12,13 @@ bot "Hi! I'm going to setup your shell settings..."
 which brew >/dev/null 2>&1
 if (( $? != 0 )); then
     action "Installing homebrew"
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 which nvm >/dev/null 2>&1
 if (( $? != 0 )); then
     action "Installing nvm"
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
     action "Installing and defaulting to latest LTS"
     latest=$(nvm version-remote --lts)
     nvm install $latest
@@ -43,27 +43,12 @@ else
     error "I don't know this shell: ${CURRENTSHELL}"
 fi
 
-bot "Going to now install oh-my-zsh and a custom git plugin"
-if [[ ! -d "./oh-my-zsh" ]]; then
-    git clone https://github.com/robbyrussell/oh-my-zsh.git ./oh-my-zsh
-fi
-
-if [[ ! -d "./oh-my-zsh/custom/plugins/git" ]]; then
-    mkdir -p ./oh-my-zsh/custom/plugins/git
-    cp ./plugins/git.plugin.zsh ./oh-my-zsh/custom/plugins/git/
-fi
-
-if [[ ! -d "./oh-my-zsh/custom/themes/powerlevel9k" ]]; then
-  git clone https://github.com/bhilburn/powerlevel9k.git oh-my-zsh/custom/themes/powerlevel9k
+if [[ ! -d "./ohmyzsh/custom/plugins/git" ]]; then
+    mkdir -p ./ohmyzsh/custom/plugins/git
+    ln -s $HOME/projects/dotfiles/plugins/git.plugin.zsh ./ohmyzsh/custom/plugins/git/
 fi
 
 ok "Oh My ZSH is all setup"
-
-.
-bot "Install z-zsh"
-if [[ ! -d "./z-zsh" ]]; then
-  git clone https://github.com/sjl/z-zsh.git
-fi
 
 bot "creating symlinks for project dotfiles..."
 pushd homedir > /dev/null 2>&1
@@ -87,7 +72,47 @@ for file in .*; do
   echo -en '\tlinked';ok
 done
 
+if [[ -d ~/.config/nvim ]]; then
+	if [ ! -d ~/.dotfiles_backup ]; then
+		mkdir -p ~/.dotfiles_backup/$now
+	fi
+	mv ~/.config/nvim ~/.dotfiles_backup/$now/nvim
+	unlink ~/.config/nvim > /dev/null 2>&1
+fi
+bot "symlinking neovim config"
+ln -s ~/projects/dotfiles/homedir/nvim ~/.config/
+
 popd > /dev/null 2>&1
+
+if [[ -d ~/.config/phpactor ]]; then
+	if [ ! -d ~/.dotfiles_backup ]; then
+		mkdir -p ~/.dotfiles_backup/$now
+	fi
+	mv ~/.config/phpactor ~/.dotfiles_backup/$now/phpactor
+	unlink ~/.config/phpactor > /dev/null 2>&1
+fi
+bot "symlinking phpactor config"
+ln -s ~/projects/dotfiles/phpactor ~/.config/
+
+bot "link scripts"
+pushd scripts > /dev/null 2>&1
+for file in *; do
+    if [ ! -d $HOME/.local/bin ]; then
+        mkdir -p $HOME/.local/bin
+    fi
+    if [[ $file == "." || $file == ".." ]]; then
+    continue
+    fi
+    if [ -e $HOME/.local/bin/$file ]; then
+        unlink $HOME/.local/bin/$file > /dev/null 2>&1
+        rm $HOME/.local/bin/$file > /dev/null 2>&1
+    fi
+    ln -s $HOME/projects/dotfiles/scripts/$file $HOME/.local/bin/$file
+done
+popd > /dev/null 2>&1
+
+bot "Installing additional tools via Brew"
+brew bundle
 
 bot "Woot! All done. Kill this terminal and launch iTerm.  You may also reboot to guarantee everything has updated."
 
