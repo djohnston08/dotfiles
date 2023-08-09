@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+today=$(date +%m-%d-%Y)
+path="${HOME}/.notes/${today}.md"
+vim $path

@@ -1,3 +1,4 @@
+vim.keymap.set('n', '<Leader>gtn', ':TestNearest --group third-party<CR>')
 vim.keymap.set('n', '<Leader>tn', ':TestNearest<CR>')
 vim.keymap.set('n', '<Leader>tf', ':TestFile<CR>')
 vim.keymap.set('n', '<Leader>ts', ':TestSuite<CR>')

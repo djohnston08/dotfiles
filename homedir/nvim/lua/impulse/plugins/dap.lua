@@ -18,6 +18,8 @@ dap.configurations.php = {
   }
 }
 
+require("nvim-dap-virtual-text").setup()
+
 require("dapui").setup({
   layouts = {
     {
@@ -53,8 +55,6 @@ end
 dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
-
-require("nvim-dap-virtual-text").setup({})
 
 vim.keymap.set("n", "<F10>", ":lua require'dap'.step_into()<cr>")
 vim.keymap.set("n", "<F9>", ":lua require'dap'.step_over()<cr>")

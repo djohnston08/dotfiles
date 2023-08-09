@@ -20,4 +20,6 @@ PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
 
 export PATH
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [ -f brew ]; then
+    eval "$(brew shellenv)"
+fi
