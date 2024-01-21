@@ -42,7 +42,7 @@ vim.keymap.set('i', ';;', '<Esc>A;')
 vim.keymap.set('i', ',,', '<Esc>A,')
 
 -- Quickly clear search highlighting.
-vim.keymap.set('n', '<leader>k', ':nohlsearch<CR>')
+vim.keymap.set('n', '<leader>w', ':nohlsearch<CR>')
 
 -- Open the current file in the default program
 vim.keymap.set('n', '<leader>x', ':!open %<CR><CR>')

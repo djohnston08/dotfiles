@@ -2,12 +2,12 @@
 
 namespace {{ prototype.namespace }};
 
-use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 {% for class in prototype.classes %}
 class {{ class.name }} extends TestCase
 {
-    use FastRefreshDatabase;
+    use RefreshDatabase;
 }
 {% endfor %}

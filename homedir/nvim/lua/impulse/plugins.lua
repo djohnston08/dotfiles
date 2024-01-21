@@ -42,7 +42,7 @@ use('tpope/vim-commentary')
 use('tpope/vim-surround')
 
 -- Access to common unix commands
-use('tpope/vim-eunuch')
+-- use('tpope/vim-eunuch')
 
 -- Pairs of handy bracket mappings, like [b and ]b.
 use('tpope/vim-unimpaired')
@@ -195,6 +195,14 @@ use({
   requires = 'tpope/vim-rhubarb',
 })
 
+-- harpoon, jump between buffers
+use({
+  'theprimeagen/harpoon',
+  config = function()
+    require('impulse/plugins/harpoon')
+  end,
+})
+
 --- Floating terminal.
 use({
   'voldikss/vim-floaterm',
@@ -279,21 +287,21 @@ use({
 })
 
 -- use("github/copilot.vim")
-use({
-  "zbirenbaum/copilot.lua",
-  cmd = "Copilot",
-  event = "InsertEnter",
-  config = function()
-    require("copilot").setup()
-  end,
-})
-use({
-  "zbirenbaum/copilot-cmp",
-  after = { "copilot.lua" },
-  config = function()
-    require("copilot_cmp").setup({})
-  end,
-})
+-- use({
+--   "zbirenbaum/copilot.lua",
+--   cmd = "Copilot",
+--   event = "InsertEnter",
+--   config = function()
+--     require("copilot").setup()
+--   end,
+-- })
+-- use({
+--   "zbirenbaum/copilot-cmp",
+--   after = { "copilot.lua" },
+--   config = function()
+--     require("copilot_cmp").setup({})
+--   end,
+-- })
 
 use("wakatime/vim-wakatime")
 

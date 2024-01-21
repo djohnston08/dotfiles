@@ -11,6 +11,18 @@ vim.g.projectionist_heuristics = {
         'tests/Feature/{}Test.php',
       },
     },
+    ['app/Repositories/*.php'] = {
+      type = 'source',
+      alternate = {
+        'app/Interfaces/{}Interface.php',
+      },
+    },
+    ['app/Interfaces/*Interface.php'] = {
+      type = 'source',
+      alternate = {
+        'app/Repositories/{}.php',
+      },
+    },
     ['tests/Feature/*Test.php'] = {
       type = 'test',
       alternate = 'app/{}.php',

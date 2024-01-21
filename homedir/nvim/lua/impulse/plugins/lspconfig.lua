@@ -5,7 +5,8 @@ lsp.preset("recommended")
 lsp.ensure_installed({
     'intelephense',
     'volar',
-    'lua_ls'
+    'lua_ls',
+    'gopls'
   })
 
 -- Fix undefined global 'vim'
@@ -20,6 +21,8 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
   ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
   ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+  ['<Tab>'] = cmp_action.luasnip_supertab(),
+  ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
   ["<C-Space>"] = cmp.mapping.complete(),
   ['<CR>'] = cmp.mapping.confirm({
     -- documentation says this is important.
@@ -29,8 +32,8 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
   })
 })
 
-cmp_mappings['<Tab>'] = nil
-cmp_mappings['<S-Tab>'] = nil
+-- cmp_mappings['<Tab>'] = nil
+-- cmp_mappings['<S-Tab>'] = nil
 
 require('luasnip/loaders/from_snipmate').lazy_load()
 
@@ -45,7 +48,7 @@ lsp.setup_nvim_cmp({
     format = lspkind.cmp_format(),
   },
   sources = {
-    { name = 'copilot' },
+    -- { name = 'copilot' },
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
     { name = 'luasnip' },
@@ -71,6 +74,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set('n', '<Leader>d', '<cmd>lua vim.diagnostic.open_float()<CR>')
   vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
   vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
+  vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
   vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
   vim.keymap.set('n', 'gi', ':Telescope lsp_implementations<CR>')
   vim.keymap.set('n', 'gr', ':Telescope lsp_references<CR>')
@@ -87,7 +91,7 @@ lsp.format_on_save({
       timeout_ms = 10000,
     },
     servers = {
-      ['null-ls'] = {'php', 'lua'},
+      ['null-ls'] = {'php', 'lua', 'gofumpt', 'goimports-reviser'},
     }
   })
 
