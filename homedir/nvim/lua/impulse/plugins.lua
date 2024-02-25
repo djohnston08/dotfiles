@@ -221,6 +221,8 @@ use({
 -- Improved syntax highlighting
 use({
   'nvim-treesitter/nvim-treesitter',
+  version = 'v0.8.5.2',
+
   run = function()
     require('nvim-treesitter.install').update({ with_sync = true })
   end,
