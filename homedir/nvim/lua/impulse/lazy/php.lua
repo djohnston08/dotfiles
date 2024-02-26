@@ -66,4 +66,39 @@ return {
             vim.keymap.set('n', '<C-a>', ':A<CR>')
         end,
     },
+    {
+        'stevearc/conform.nvim',
+        opts = function()
+            local util = require("conform.util")
+            local opts = {
+                format = {
+                    timeout_ms = 3000,
+                    async = false,
+                    quiet = false,
+                },
+                formatters_by_ft = {
+                    lua = { "styleua" },
+                    php = { "pint" },
+                    sh = { "shfmt" },
+                    javascript = { "prettierd" },
+                },
+                formatters = {
+                    injected = { options = { ignore_errors = true } },
+                    pint = {
+                        command = util.find_executable({
+                            'vendor/bin/pint',
+                            vim.fn.stdpath('data') .. '/mason/bin/pint',
+                        }, 'pint'),
+                        args = { "$FILENAME" },
+                        stdin = false,
+                    },
+                },
+                format_on_save = {
+                    timeout_ms = 3000,
+                    lsp_fallback = true,
+                },
+            }
+            return opts
+        end,
+    }
 }
