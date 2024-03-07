@@ -3,7 +3,7 @@ return {
     {
         'phpactor/phpactor',
         ft = 'php',
-        run = 'composer install --no-dev --optimize-autoloader',
+        build = 'composer install --no-dev --optimize-autoloader',
         config = function()
             vim.keymap.set('n', '<Leader>pm', ':PhpactorContextMenu<CR>')
             vim.keymap.set('n', '<Leader>pn', ':PhpactorClassNew<CR>')
@@ -13,7 +13,9 @@ return {
     -- Project Configuration.
     {
         'tpope/vim-projectionist',
-        requires = 'tpope/vim-dispatch',
+        dependencies = {
+            'tpope/vim-dispatch',
+        },
         config = function()
             vim.g.projectionist_heuristics = {
                 artisan = {
