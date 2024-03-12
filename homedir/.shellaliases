@@ -11,9 +11,10 @@ alias ll='ls -al -h -p '
 alias refresh='exec zsh'
 alias po='popd'
 
+# Sail aliases
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
-# alias arty='hasSail && sail artisan || php artisan'
 alias arty='sail artisan'
+alias sud='sail up -d'
 
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
