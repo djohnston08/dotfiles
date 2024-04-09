@@ -1,3 +1,13 @@
+local get_intelephense_license = function()
+    local f = assert(io.open(os.getenv("HOME") .. "/intelephense/license.txt", "rb"))
+
+    local content = f:read("*a")
+
+    f:close()
+
+    return string.gsub(content, "%s+", "")
+end
+
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -8,7 +18,11 @@ return {
         "hrsh7th/cmp-path",
         "hrsh7th/cmp-cmdline",
         "hrsh7th/nvim-cmp",
-        "L3MON4D3/LuaSnip",
+        {
+            "L3MON4D3/LuaSnip",
+            tag = "v2.*",
+            run = "make install_jsregexp"
+        },
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
     },
@@ -56,8 +70,19 @@ return {
                         }
                     }
                 end,
+                ["intelephense"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.intelephense.setup {
+                        capabilities = capabilities,
+                        init_options = {
+                            licenceKey = get_intelephense_license()
+                        }
+                    }
+                end,
             }
         })
+
+        require('luasnip/loaders/from_snipmate').lazy_load()
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 

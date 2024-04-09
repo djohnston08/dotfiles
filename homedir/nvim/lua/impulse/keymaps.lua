@@ -45,7 +45,8 @@ vim.keymap.set('i', ',,', '<Esc>A,')
 vim.keymap.set('n', '<leader>w', ':nohlsearch<CR>')
 
 -- Open the current file in the default program
-vim.keymap.set('n', '<leader>x', ':!open %<CR><CR>')
+vim.keymap.set('n', '<leader>vx', ':close<CR>')
+vim.keymap.set('n', '<leader>vqx', ':cclose<CR>')
 
 -- Move lines up and down.
 vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv")
@@ -69,6 +70,3 @@ vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
-
--- Make file executable
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
