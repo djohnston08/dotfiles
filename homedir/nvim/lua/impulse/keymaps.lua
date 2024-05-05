@@ -41,19 +41,17 @@ vim.keymap.set('x', '<leader>p', '"_dP')
 vim.keymap.set('i', ';;', '<Esc>A;')
 vim.keymap.set('i', ',,', '<Esc>A,')
 
+-- Easy drop back to normal mode from insert
+vim.keymap.set('i', 'jj', '<Esc>')
+
 -- Quickly clear search highlighting.
 vim.keymap.set('n', '<leader>w', ':nohlsearch<CR>')
-
--- Open the current file in the default program
-vim.keymap.set('n', '<leader>vx', ':close<CR>')
-vim.keymap.set('n', '<leader>vqx', ':cclose<CR>')
 
 -- Move lines up and down.
 vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv")
 vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv")
 
 vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
 -- Open new tmux session
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
