@@ -17,8 +17,27 @@ return {
                 path_display = { truncate = 1 },
                 prompt_prefix = '   ',
                 selection_caret = '  ',
+                vimgrep_arguments = {
+                    'rg',
+                    '--color=never',
+                    '--no-heading',
+                    '--with-filename',
+                    '--line-number',
+                    '--column',
+                    '--smart-case',
+                    '--hidden',
+                    '--no-ignore-vcs'
+                },
+                layout_strategy = "vertical",
                 layout_config = {
-                    prompt_position = 'top',
+                    -- prompt_position = 'top',
+                    preview_height = 0.7,
+                    vertical = {
+                        size = {
+                            width = "95%",
+                            height = "95%",
+                        },
+                    },
                 },
                 sorting_strategy = 'ascending',
                 mappings = {

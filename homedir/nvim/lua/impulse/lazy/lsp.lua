@@ -20,8 +20,8 @@ return {
         "hrsh7th/nvim-cmp",
         {
             "L3MON4D3/LuaSnip",
-            tag = "v2.*",
-            run = "make install_jsregexp"
+            version = "v2.*",
+            build = "make install_jsregexp"
         },
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",

@@ -18,7 +18,7 @@ return {
         },
         config = function()
             vim.g.projectionist_heuristics = {
-                artisan = {
+                ["artisan"] = {
                     ['*'] = {
                         console = 'sail artisan tinker',
                         logs = 'tail -n 200 -f storage/logs/laravel.log',
@@ -61,6 +61,20 @@ return {
                     },
                     ['database/migrations/*.php'] = {
                         type = 'migration',
+                    },
+                },
+                ["angular.json"] = {
+                    ['src/*.ts'] = {
+                        type = 'source',
+                        alternate = {
+                            'src/{}.html',
+                        },
+                    },
+                    ['src/*.html'] = {
+                        type = 'source',
+                        alternate = {
+                            'src/{}.ts',
+                        },
                     },
                 },
             }
