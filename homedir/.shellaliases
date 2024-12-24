@@ -22,4 +22,6 @@ alias ta='tmux attach'
 
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
+alias run-golinks='docker run --rm -d -u root -e "TS_AUTHKEY=tskey-auth-kXFtme3LdK11CNTRL-MZDErzrEoP8JTEKpSYz6V8hLTuuRkKFk2" -v /Users/djohnston/golink_data:/home/nonroot ghcr.io/tailscale/golink:main'
+
 set -o vi
