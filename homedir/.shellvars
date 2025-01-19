@@ -16,6 +16,8 @@ export MYDOCUMENTS=~/Documents
 # Tool paths
 #########################################################################
 export GOPATH=$HOME/go
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export ANDROID_HOME=/Users/djohnston/Library/Android/sdk
 
 #########################################################################
 # Tool settings

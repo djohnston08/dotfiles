@@ -265,7 +265,7 @@ local applicationHotkeys = {
   -- w = 'Calendar',
   z = 'News',
   -- d = 'Sunsama',
-  e = 'Superhuman',
+  e = 'Email',
   g = 'OpenLens',
   -- r = 'Postman',
   d = 'Reminders',
@@ -274,6 +274,7 @@ local applicationHotkeys = {
   u = 'Sonos',
   b = 'Miro',
   z = 'Keymapp',
+  a = 'ChatGPT',
 }
 
 for key, app in pairs(applicationHotkeys) do

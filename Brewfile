@@ -52,14 +52,10 @@ brew "luarocks"
 brew "mas"
 brew "protobuf"
 brew "mitmproxy"
-brew "mysql"
-brew "mysql@5.7"
 brew "neovim"
 brew "nghttp2"
 brew "nmap"
 brew "openapi-generator"
-brew "php@7.4"
-brew "php@8.0"
 brew "php@8.1"
 brew "php@8.2", link: true
 brew "postgresql@15"
@@ -75,28 +71,14 @@ brew "virtualenv"
 brew "watchman"
 brew "wget"
 brew "wimlib"
-brew "hashicorp/tap/terraform"
 brew "jesseduffield/lazygit/lazygit"
 brew "stripe/stripe-cli/stripe"
-brew "teamookla/speedtest/speedtest"
 cask "android-platform-tools"
-cask "keepingyouawake"
 cask "openlens"
 cask "wireshark"
-mas "Drafts", id: 1435957248
-mas "Fantastical", id: 975937182
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
-mas "Kindle", id: 405399194
-mas "LimeChat", id: 414030210
-mas "Microsoft Remote Desktop", id: 1295203466
 mas "MindNode", id: 1289197285
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
-mas "Parallels Desktop", id: 1085114709
-mas "Slack", id: 803453959
-mas "Tailscale", id: 1475387142
-mas "Textual IRC Client", id: 1262957439
 mas "Unsplash Wallpapers", id: 1284863847
 mas "Xcode", id: 497799835
 vscode "blinkshellinc.blink-fs"
