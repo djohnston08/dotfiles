@@ -20,6 +20,7 @@ export PATH=$PATH:$HOME/.local/bin
 
 # mysql-client installed via brew
 export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 
 # android studio
 export PATH=$PATH:$ANDROID_HOME/emulator
