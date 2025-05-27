@@ -160,6 +160,9 @@ return {
                 -- Buffer local mappings.
                 -- See `:help vim.lsp.*` for documentation on any of the below functions
                 local opts = { buffer = ev.buf }
+                vim.keymap.set('n', '<Leader>d', '<cmd>lua vim.diagnostic.open_float()<CR>')
+                vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
+                vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
                 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
                 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
                 vim.keymap.set('n', 'gdv', ':vsplit | lua vim.lsp.buf.definition()<CR>', opts)

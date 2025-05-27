@@ -70,6 +70,21 @@ return {
             vim.keymap.set("n", "<F5>", ":lua require'dap'.continue()<cr>")
             vim.keymap.set("n", "<F6>", ":lua require'dap'.toggle_breakpoint()<cr>")
             vim.keymap.set("n", "<Leader>dt", ":lua require('dapui').toggle()<cr>")
+
+            -- Function to set conditional breakpoint
+            function _G.set_conditional_breakpoint()
+                -- Prompt for the condition
+                vim.ui.input({ prompt = 'Breakpoint condition: ' }, function(condition)
+                    if condition then
+                        dap.set_breakpoint(condition)
+                    end
+                end)
+            end
+
+            -- Map it to a key
+            -- For example, mapping to <leader>dc for "debug condition"
+            vim.keymap.set('n', '<leader>dc', _G.set_conditional_breakpoint,
+                { desc = 'Debug: Set conditional breakpoint' })
         end,
     },
 }

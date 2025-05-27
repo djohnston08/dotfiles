@@ -4,7 +4,7 @@ return {
         name = "plenary"
     },
 
-    "github/copilot.vim",
+    -- "github/copilot.vim",
 
     -- All closing buffers without closing the split window.
     {
@@ -12,6 +12,11 @@ return {
         config = function()
             vim.keymap.set('n', '<Leader>q', ':Bdelete<CR>')
         end,
+    },
+
+    -- Add, change, or delete surrounding text
+    {
+        'tpope/vim-surround'
     },
 
     "wakatime/vim-wakatime",
