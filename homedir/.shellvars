@@ -23,4 +23,4 @@ export ANDROID_HOME=/Users/djohnston/Library/Android/sdk
 # Tool settings
 #########################################################################
 export NVM_DIR=~/.nvm
-    
+
