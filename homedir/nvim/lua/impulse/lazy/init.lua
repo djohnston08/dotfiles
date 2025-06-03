@@ -51,6 +51,18 @@ return {
 			vim.keymap.set("n", "<leader>gl", function()
 				lazygit:toggle()
 			end, { desc = "Lazygit" })
+			
+			-- Add keymap to sync terminal directory with current Neovim directory
+			vim.keymap.set("n", "<leader>ts", function()
+				local terms = require("toggleterm.terminal").get_all()
+				local current_dir = vim.fn.getcwd()
+				for _, term in pairs(terms) do
+					if term:is_open() then
+						term:change_dir(current_dir)
+						vim.notify("Terminal " .. term.id .. " directory synced to: " .. current_dir)
+					end
+				end
+			end, { desc = "Sync terminal directory with current directory" })
 		end,
 	},
 	-- {

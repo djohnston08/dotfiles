@@ -20,6 +20,25 @@ return {
 
 			-- Load the telescope extension
 			require("telescope").load_extension("git_worktree")
+			
+			-- Set up hooks to update ToggleTerm when switching worktrees
+			local worktree = require("git-worktree")
+			
+			-- Update ToggleTerm directory when switching worktrees
+			worktree.on_tree_change(function(op, metadata)
+				if op == worktree.Operations.Switch then
+					-- Update all open terminals to the new directory
+					local ok, toggleterm = pcall(require, "toggleterm.terminal")
+					if ok then
+						local terms = toggleterm.get_all()
+						for _, term in pairs(terms) do
+							if term:is_open() then
+								term:change_dir(metadata.path)
+							end
+						end
+					end
+				end
+			end)
 
 			-- Create keymaps
 			vim.keymap.set("n", "<leader>gw", function()
