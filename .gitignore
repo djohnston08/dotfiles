@@ -21,3 +21,9 @@ oh-my-zsh/
 z-zsh/
 .DS_Store
 
+# Claude Code local settings
+.claude/settings.local.json
+
+# Neovim plugin lockfile
+homedir/nvim/lazy-lock.json
+
