@@ -134,7 +134,7 @@ function gwt-smart() {
         worktree_path="$branch"
     else
         # For normal repos, create as sibling directory
-        worktree_path="../${repo_name}-${branch}"
+        worktree_path="../${branch}"
     fi
 
     echo "Creating worktree: $worktree_path from branch: $base"
