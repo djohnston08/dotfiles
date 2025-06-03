@@ -43,26 +43,43 @@ function error() {
 }
 
 # Create a new git repo with one README commit and CD into it
-function gitnr() { mkdir $1; cd $1; git init; touch README; git add README; git commit -mFirst-commit;}
+function gitnr() {
+    mkdir $1
+    cd $1
+    git init
+    touch README
+    git add README
+    git commit -mFirst-commit
+}
 
 # Do a Matrix movie effect of falling characters
 function matrix1() {
-echo -e "\e[1;40m" ; clear ; while :; do echo $LINES $COLUMNS $(( $RANDOM % $COLUMNS)) $(( $RANDOM % 72 )) ;sleep 0.05; done|gawk '{ letters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"; c=$4; letter=substr(letters,c,1);a[$3]=0;for (x in a) {o=a[x];a[x]=a[x]+1; printf "\033[%s;%sH\033[2;32m%s",o,x,letter; printf "\033[%s;%sH\033[1;37m%s\033[0;0H",a[x],x,letter;if (a[x] >= $1) { a[x]=0; } }}'
+    echo -e "\e[1;40m"
+    clear
+    while :; do
+        echo $LINES $COLUMNS $(($RANDOM % $COLUMNS)) $(($RANDOM % 72))
+        sleep 0.05
+    done | gawk '{ letters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"; c=$4; letter=substr(letters,c,1);a[$3]=0;for (x in a) {o=a[x];a[x]=a[x]+1; printf "\033[%s;%sH\033[2;32m%s",o,x,letter; printf "\033[%s;%sH\033[1;37m%s\033[0;0H",a[x],x,letter;if (a[x] >= $1) { a[x]=0; } }}'
 }
 
 function matrix2() {
-echo -e "\e[1;40m" ; clear ; characters=$( jot -c 94 33 | tr -d '\n' ) ; while :; do echo $LINES $COLUMNS $(( $RANDOM % $COLUMNS)) $(( $RANDOM % 72 )) $characters ;sleep 0.05; done|gawk '{ letters=$5; c=$4; letter=substr(letters,c,1);a[$3]=0;for (x in a) {o=a[x];a[x]=a[x]+1; printf "\033[%s;%sH\033[2;32m%s",o,x,letter; printf "\033[%s;%sH\033[1;37m%s\033[0;0H",a[x],x,letter;if (a[x] >= $1) { a[x]=0; } }}'
+    echo -e "\e[1;40m"
+    clear
+    characters=$(jot -c 94 33 | tr -d '\n')
+    while :; do
+        echo $LINES $COLUMNS $(($RANDOM % $COLUMNS)) $(($RANDOM % 72)) $characters
+        sleep 0.05
+    done | gawk '{ letters=$5; c=$4; letter=substr(letters,c,1);a[$3]=0;for (x in a) {o=a[x];a[x]=a[x]+1; printf "\033[%s;%sH\033[2;32m%s",o,x,letter; printf "\033[%s;%sH\033[1;37m%s\033[0;0H",a[x],x,letter;if (a[x] >= $1) { a[x]=0; } }}'
 }
 
-function setproj()
-{
+function setproj() {
     echo "###############"
     echo "##  \[._.]/  ##"
     echo "###############"
     bot "Hi, this workspace is setup for the $1 project"
 }
 
-function fixperms(){
+function fixperms() {
     find . \( -name "*.sh" -or -type d \) -exec chmod 755 {} \; && find . -type f ! -name "*.sh" -exec chmod 644 {} \;
 }
 
@@ -71,24 +88,23 @@ function fixperms(){
 ## or get all headers
 ## curlheader ${url}
 function curlheader() {
-  if [[ -z "$2" ]]; then
-    echo "curl -k -s -D - $1 -o /dev/null"
-    curl -k -s -D - $1 -o /dev/null:
-  else
-    echo "curl -k -s -D - $2 -o /dev/null | grep $1:"
-    curl -k -s -D - $2 -o /dev/null | grep $1:
-  fi
+    if [[ -z "$2" ]]; then
+        echo "curl -k -s -D - $1 -o /dev/null"
+        curl -k -s -D - $1 -o /dev/null:
+    else
+        echo "curl -k -s -D - $2 -o /dev/null | grep $1:"
+        curl -k -s -D - $2 -o /dev/null | grep $1:
+    fi
 }
 
 ## hammer a service with curl for a given number of times
-function curlhammer () {
-  bot "about to hammer $1 with $2 curls ⇒";
-  echo "curl -k -s -D - $1 -o /dev/null | grep 'HTTP/1.1' | sed 's/HTTP\/1.1 //'"
-  for i in {1..$2}
-  do
-    curl -k -s -D - $1 -o /dev/null | grep 'HTTP/1.1' | sed 's/HTTP\/1.1 //'
-  done
-  bot "done"
+function curlhammer() {
+    bot "about to hammer $1 with $2 curls ⇒"
+    echo "curl -k -s -D - $1 -o /dev/null | grep 'HTTP/1.1' | sed 's/HTTP\/1.1 //'"
+    for i in {1..$2}; do
+        curl -k -s -D - $1 -o /dev/null | grep 'HTTP/1.1' | sed 's/HTTP\/1.1 //'
+    done
+    bot "done"
 }
 
 function hasSail() {
@@ -101,4 +117,48 @@ function hasSail() {
     fi
 
     return 1
+}
+
+# Smart worktree creation with tmux integration
+function gwt-smart() {
+    local branch=$1
+    local base=${2:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | cut -d'/' -f4 || echo "main")}
+    local repo_name=$(basename $(git rev-parse --show-toplevel))
+    local worktree_path="../${repo_name}-${branch}"
+
+    echo "Creating worktree: $worktree_path from branch: $base"
+    git worktree add -b "$branch" "$worktree_path" "$base"
+    cd "$worktree_path"
+
+    # Auto-create tmux session if tmux is available
+    if command -v tmux &>/dev/null && [ -n "$TMUX" ]; then
+        local session_name="${repo_name}-${branch}"
+        tmux new-session -d -s "$session_name" -c "$worktree_path"
+        tmux switch-client -t "$session_name" 2>/dev/null
+    fi
+}
+
+# Enhanced worktree switching
+function gwt-switch() {
+    local worktree=$(git worktree list | fzf | awk '{print $1}')
+    if [[ -n "$worktree" ]]; then
+        cd "$worktree"
+        echo "Switched to worktree: $worktree"
+    fi
+}
+
+# Clean up merged worktrees
+function gwt-cleanup() {
+    git worktree list | grep -v "bare)" | while read -r line; do
+        local path=$(echo "$line" | awk '{print $1}')
+        local branch=$(echo "$line" | awk '{print $3}' | tr -d '[]')
+
+        if [[ "$branch" != "main" && "$branch" != "master" && "$branch" != "develop" ]]; then
+            echo "Checking if branch '$branch' is merged..."
+            if git branch --merged main | grep -q "$branch"; then
+                echo "Removing merged worktree: $path"
+                git worktree remove "$path"
+            fi
+        fi
+    done
 }

@@ -65,6 +65,8 @@ brew "python@3.9"
 brew "ripgrep"
 brew "shellcheck"
 brew "stow"
+brew "stylua"
+brew "shfmt"
 brew "telnet", link: false
 brew "tmux"
 brew "virtualenv"

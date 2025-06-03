@@ -1,16 +1,151 @@
 #!/usr/bin/env bash
 
+# Function to find git worktrees
+find_worktrees() {
+    local base_dirs=("$@")
+
+    {
+        # First, output all top-level directories
+        for dir in "${base_dirs[@]}"; do
+            if [[ -d "$dir" ]]; then
+                find "$dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+            fi
+        done
+
+        # Then find git worktrees
+        for dir in "${base_dirs[@]}"; do
+            if [[ -d "$dir" ]]; then
+                # Look for git repositories (up to 2 levels deep to catch bare repos)
+                find "$dir" -maxdepth 2 -type d 2>/dev/null | while read -r repo_dir; do
+                    # Quick check if it's a git repository
+                    if [[ -d "$repo_dir/.git" ]] || [[ -d "$repo_dir/objects" && -d "$repo_dir/refs" ]]; then
+                        # Get worktrees for this repository
+                        (cd "$repo_dir" 2>/dev/null && git worktree list --porcelain 2>/dev/null || true) |
+                            awk '/^worktree / {print substr($0, 10)}' |
+                            while read -r worktree_path; do
+                                # Skip the main/bare repository path itself
+                                if [[ "$worktree_path" != "$repo_dir" ]] && [[ -d "$worktree_path" ]]; then
+                                    echo "$worktree_path"
+                                fi
+                            done
+                    fi
+                done
+            fi
+        done
+    } | sort -u
+}
+
+# Function to get a descriptive name for the session
+get_session_name() {
+    local path="$1"
+    local name=$(basename "$path" | tr . _)
+
+    # Check if it's inside a git repository
+    if cd "$path" 2>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+        local branch=$(git branch --show-current 2>/dev/null)
+        local is_bare=$(git rev-parse --is-bare-repository 2>/dev/null || echo false)
+
+        # For bare repositories, we need to find the parent directory name
+        if [[ "$is_bare" == "true" ]]; then
+            # This is the bare repository itself
+            name=$(basename "$path" | tr . _)
+        else
+            # This is a worktree - check if it's inside a bare repo structure
+            local parent_dir=$(dirname "$path")
+            if [[ -d "$parent_dir/objects" && -d "$parent_dir/refs" ]]; then
+                # Worktree inside a bare repo
+                local repo_name=$(basename "$parent_dir")
+                if [[ -n "$branch" ]]; then
+                    name=$(echo "${repo_name}-${branch}" | tr . _ | tr / -)
+                else
+                    # Use directory name as fallback
+                    name=$(echo "${repo_name}-$(basename "$path")" | tr . _ | tr / -)
+                fi
+            else
+                # Regular worktree or repository
+                local toplevel=$(git rev-parse --show-toplevel 2>/dev/null)
+                if [[ "$path" != "$toplevel" ]]; then
+                    # It's a worktree
+                    local repo_name=$(basename "$toplevel")
+                    if [[ -n "$branch" ]]; then
+                        name=$(echo "${repo_name}-${branch}" | tr . _ | tr / -)
+                    else
+                        name=$(echo "${repo_name}-$(basename "$path")" | tr . _ | tr / -)
+                    fi
+                else
+                    # It's the main repository
+                    if [[ -n "$branch" && "$branch" != "main" && "$branch" != "master" ]]; then
+                        name=$(echo "${name}-${branch}" | tr . _ | tr / -)
+                    fi
+                fi
+            fi
+        fi
+    fi
+
+    echo "$name"
+}
+
 if [[ $# -eq 1 ]]; then
     selected=$1
+elif [[ $# -eq 2 ]] && [[ "$1" == "new-worktree" ]]; then
+    # Create a new worktree from current directory
+    if [[ -d .git ]] || [[ -f .git ]]; then
+        branch_name="$2"
+        repo_name=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)")
+        worktree_path="../${repo_name}-${branch_name}"
+
+        echo "Creating new worktree: $worktree_path"
+        git worktree add -b "$branch_name" "$worktree_path" || exit 1
+        selected="$(cd "$worktree_path" && pwd)"
+    else
+        echo "Error: Not in a git repository"
+        exit 1
+    fi
 else
-    selected=$(find ~/projects ~/ ~/projects/php ~/projects/js ~/projects/sh ~/projects/go ~/projects/dotnet ~/projects/infra ~/projects/mobile ~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents  -mindepth 1 -maxdepth 1 -type d | fzf)
+    # Define base directories to search
+    base_dirs=(
+        ~/projects
+        ~/
+        ~/projects/php
+        ~/projects/mcps
+        ~/projects/js
+        ~/projects/sh
+        ~/projects/go
+        ~/projects/dotnet
+        ~/projects/infra
+        ~/projects/mobile
+        ~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents
+    )
+
+    # Find all directories including worktrees
+    selected=$(find_worktrees "${base_dirs[@]}" | sort -u | fzf --preview '
+        if [[ -f {}/.git ]]; then
+            echo "=== Git Worktree ==="
+            cd {} && git status -sb
+            echo
+            echo "Branch: $(git branch --show-current)"
+            echo "Parent: $(git rev-parse --show-toplevel 2>/dev/null)"
+            echo
+            git log --oneline -5
+        elif [[ -d {}/.git ]]; then
+            echo "=== Git Repository ==="
+            cd {} && git status -sb
+            echo
+            echo "Worktrees:"
+            git worktree list
+            echo
+            git log --oneline -5
+        else
+            ls -la {}
+        fi
+    ')
 fi
 
 if [[ -z $selected ]]; then
     exit 0
 fi
 
-selected_name=$(basename "$selected" | tr . _)
+selected_name=$(get_session_name "$selected")
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
@@ -18,7 +153,7 @@ if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
     exit 0
 fi
 
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
+if ! tmux has-session -t=$selected_name 2>/dev/null; then
     tmux new-session -ds $selected_name -c $selected
 fi
 
