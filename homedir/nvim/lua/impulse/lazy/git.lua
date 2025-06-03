@@ -54,9 +54,25 @@ return {
 							base = "origin/" .. base
 						end
 
+						-- Get the repository root
+						local repo_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("%s+$", "")
+						local is_bare = vim.fn.system("git rev-parse --is-bare-repository"):gsub("%s+$", "") == "true"
+						
+						-- Determine worktree path
+						local worktree_path
+						if is_bare then
+							-- For bare repos, create at the root level
+							worktree_path = branch
+						else
+							-- For normal repos, create as sibling directory
+							local parent_dir = vim.fn.fnamemodify(repo_root, ":h")
+							local repo_name = vim.fn.fnamemodify(repo_root, ":t")
+							worktree_path = parent_dir .. "/" .. repo_name .. "-" .. branch
+						end
+						
 						-- Create the worktree
-						git_worktree.create_worktree(branch, base)
-						vim.notify("Creating worktree '" .. branch .. "' from " .. base)
+						git_worktree.create_worktree(worktree_path, base, branch)
+						vim.notify("Creating worktree '" .. branch .. "' at " .. worktree_path .. " from " .. base)
 					end)
 				end)
 			end, { desc = "Create git worktree" })

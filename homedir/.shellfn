@@ -123,17 +123,37 @@ function hasSail() {
 function gwt-smart() {
     local branch=$1
     local base=${2:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | cut -d'/' -f4 || echo "main")}
-    local repo_name=$(basename $(git rev-parse --show-toplevel))
-    local worktree_path="../${repo_name}-${branch}"
+    local repo_root=$(git rev-parse --show-toplevel)
+    local repo_name=$(basename "$repo_root")
+    local is_bare=$(git rev-parse --is-bare-repository)
+    
+    # Determine worktree path
+    local worktree_path
+    if [[ "$is_bare" == "true" ]]; then
+        # For bare repos, create at the root level
+        worktree_path="$branch"
+    else
+        # For normal repos, create as sibling directory
+        worktree_path="../${repo_name}-${branch}"
+    fi
 
     echo "Creating worktree: $worktree_path from branch: $base"
     git worktree add -b "$branch" "$worktree_path" "$base"
-    cd "$worktree_path"
+    
+    # Get the actual worktree directory
+    local actual_path
+    if [[ "$is_bare" == "true" ]]; then
+        actual_path="$(dirname "$repo_root")/$branch"
+    else
+        actual_path="$(dirname "$repo_root")/${repo_name}-${branch}"
+    fi
+    
+    cd "$actual_path"
 
     # Auto-create tmux session if tmux is available
     if command -v tmux &>/dev/null && [ -n "$TMUX" ]; then
         local session_name="${repo_name}-${branch}"
-        tmux new-session -d -s "$session_name" -c "$worktree_path"
+        tmux new-session -d -s "$session_name" -c "$actual_path"
         tmux switch-client -t "$session_name" 2>/dev/null
     fi
 }
@@ -161,4 +181,30 @@ function gwt-cleanup() {
             fi
         fi
     done
+}
+
+# Convert existing repo to bare repo with worktrees
+function gwt-convert-to-bare() {
+    local repo_root=$(git rev-parse --show-toplevel)
+    local repo_name=$(basename "$repo_root")
+    local parent_dir=$(dirname "$repo_root")
+    local current_branch=$(git branch --show-current)
+    
+    echo "Converting $repo_name to bare repository..."
+    
+    # Create a new bare clone
+    cd "$parent_dir"
+    mv "$repo_name" "${repo_name}-backup"
+    git clone --bare "${repo_name}-backup/.git" "${repo_name}"
+    
+    # Add the current branch as a worktree
+    cd "${repo_name}"
+    git worktree add "$current_branch" "$current_branch"
+    
+    echo "Conversion complete!"
+    echo "Original repo backed up to: ${repo_name}-backup"
+    echo "New bare repo at: ${parent_dir}/${repo_name}"
+    echo "Working tree at: ${parent_dir}/${repo_name}/${current_branch}"
+    
+    cd "$current_branch"
 }
