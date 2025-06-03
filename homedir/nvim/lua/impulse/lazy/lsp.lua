@@ -46,7 +46,7 @@ return {
 		require("mason-lspconfig").setup({
 			ensure_installed = {
 				"intelephense",
-				"volar",
+				"vue_ls",
 				"lua_ls",
 				"gopls",
 				"ts_ls",
