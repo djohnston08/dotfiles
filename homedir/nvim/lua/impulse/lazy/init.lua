@@ -38,6 +38,18 @@ return {
 				open_mapping = [[<F1>]],
 				direction = "float",
 				float_opts = { border = "curved" },
+				highlights = {
+					Normal = {
+						guibg = "#1f1f28",  -- Kanagawa's dark background
+					},
+					NormalFloat = {
+						link = "Normal"
+					},
+					FloatBorder = {
+						guifg = "#54546D",  -- Kanagawa's muted color
+						guibg = "#1f1f28",
+					},
+				},
 			})
 
 			local Terminal = require("toggleterm.terminal").Terminal
