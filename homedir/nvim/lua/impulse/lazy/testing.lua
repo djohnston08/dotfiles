@@ -10,14 +10,19 @@ return {
 
 		vim.cmd([[
           function! ToggletermStrategy(cmd)
-            lua require('toggleterm.terminal').Terminal:new({
-              \ cmd = a:cmd,
-              \ direction = 'float',
-              \ close_on_exit = false,
-              \ on_open = function(term)
-              \   vim.cmd('startinsert!')
-              \ end,
-              \ }):toggle()
+            lua << EOF
+              local Terminal = require('toggleterm.terminal').Terminal
+              local cmd = vim.fn.eval('a:cmd')
+              local test_term = Terminal:new({
+                cmd = cmd,
+                direction = 'float',
+                close_on_exit = false,
+                float_opts = {
+                  border = 'curved'
+                }
+              })
+              test_term:toggle()
+EOF
           endfunction
 
           let g:test#custom_strategies = {'toggleterm': function('ToggletermStrategy')}
