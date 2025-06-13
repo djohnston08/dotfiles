@@ -9,13 +9,19 @@ return {
 		vim.keymap.set("n", "<Leader>tv", ":TestVisit<CR>")
 
 		vim.cmd([[
-          function! FloatermStrategy(cmd)
-            execute 'silent FloatermKill'
-            execute 'FloatermNew! '.a:cmd.' |less -X'
+          function! ToggletermStrategy(cmd)
+            lua require('toggleterm.terminal').Terminal:new({
+              \ cmd = a:cmd,
+              \ direction = 'float',
+              \ close_on_exit = false,
+              \ on_open = function(term)
+              \   vim.cmd('startinsert!')
+              \ end,
+              \ }):toggle()
           endfunction
 
-          let g:test#custom_strategies = {'floaterm': function('FloatermStrategy')}
-          let g:test#strategy = 'floaterm'
+          let g:test#custom_strategies = {'toggleterm': function('ToggletermStrategy')}
+          let g:test#strategy = 'toggleterm'
           let g:test#runner_commands = ['PHPUnit']
           let g:test#php#phpunit#executable = 'sail artisan test'
         ]])
