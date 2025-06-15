@@ -1,14 +1,14 @@
 return {
-	"vim-test/vim-test",
-	config = function()
-		vim.keymap.set("n", "<Leader>gtn", ":TestNearest --group third-party<CR>")
-		vim.keymap.set("n", "<Leader>tn", ":TestNearest<CR>")
-		vim.keymap.set("n", "<Leader>tf", ":TestFile<CR>")
-		vim.keymap.set("n", "<Leader>ts", ":TestSuite<CR>")
-		vim.keymap.set("n", "<Leader>tl", ":TestLast<CR>")
-		vim.keymap.set("n", "<Leader>tv", ":TestVisit<CR>")
+    "vim-test/vim-test",
+    config = function()
+        vim.keymap.set("n", "<Leader>gtn", ":TestNearest --group third-party<CR>")
+        vim.keymap.set("n", "<Leader>tn", ":TestNearest<CR>")
+        vim.keymap.set("n", "<Leader>tf", ":TestFile<CR>")
+        vim.keymap.set("n", "<Leader>ts", ":TestSuite<CR>")
+        vim.keymap.set("n", "<Leader>tl", ":TestLast<CR>")
+        vim.keymap.set("n", "<Leader>tv", ":TestVisit<CR>")
 
-		vim.cmd([[
+        vim.cmd([[
           function! ToggletermStrategy(cmd)
             lua << EOF
               local Terminal = require('toggleterm.terminal').Terminal
@@ -31,7 +31,7 @@ EOF
           let g:test#php#phpunit#executable = 'sail artisan test'
         ]])
 
-		vim.keymap.set("n", "<Leader>ds", ":let test#php#phpunit#executable = 'sail debug test'<cr>")
-		vim.keymap.set("n", "<Leader>ns", ":let test#php#phpunit#executable = 'sail artisan test'<cr>")
-	end,
+        vim.keymap.set("n", "<Leader>ds", ":let test#php#phpunit#executable = 'sail debug test'<cr>")
+        vim.keymap.set("n", "<Leader>ns", ":let test#php#phpunit#executable = 'sail artisan test'<cr>")
+    end,
 }
