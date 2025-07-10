@@ -59,6 +59,9 @@ vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 -- Format buffer via LSP
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
+-- Close all buffers except current one
+vim.keymap.set("n", "<leader>bo", ":%bd|e#|bd#<CR>")
+
 -- Quickfix navigation
 --
 -- I don't love these first two
