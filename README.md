@@ -139,14 +139,18 @@ See [Hammerspoon Key Reference](#hammerspoon-key-reference) below for all keyboa
 
 ### Portrait Monitor Features
 - `Hyper + 9` → Quick position Spotify on portrait monitor
-- `Hyper + 6` → Productivity layout (Spotify, Chrome, Slack)
-- `Hyper + 5` → Monitoring layout (Activity Monitor, Console)
-- `Hyper + 4` → Communication layout (Slack, Messages, Discord)
+- `Hyper + 6` → Meeting layout:
+  - Left monitor: Granola (left 30%), iTerm (right 70%)
+  - Middle monitor: Chrome centered (70% size)
+  - Portrait monitor: Fantastical (top half), Slack (bottom half)
+- `Hyper + 5` → Monitoring layout:
+  - Portrait monitor: OpenLens (top), DataGrip (middle), Docker Desktop (bottom)
+- `Hyper + 4` → Communication layout:
+  - Portrait monitor: Discord (top), Slack (middle), Messages (bottom)
 - `Hyper + 3` → Coding layout:
   - Left monitor: Chrome (full width, top 70%), DataGrip (full width, bottom 30%)
   - Middle monitor: iTerm fullscreen
   - Portrait monitor: Spotify (top 20%), Linear (25% height), Claude (bottom 55%)
-- `Hyper + 2` → Debug portrait screen info
 
 ### Other Controls
 - `Hyper + \` → Display current Spotify track

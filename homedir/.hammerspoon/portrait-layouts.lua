@@ -95,19 +95,20 @@ end
 
 -- Portrait layout definitions
 local portraitLayouts = {
-  productivity = {
-    { app = 'Spotify',        unit = portraitUnits.top20 },      -- Top 20%
-    { app = 'Google Chrome',  unit = portraitUnits.middle30 },   -- Middle 30% (20-50%)
-    { app = 'Slack',          unit = portraitUnits.bottom50 },   -- Bottom 50%
-  },
   monitoring = {
-    { app = 'Activity Monitor', unit = portraitUnits.top40 },    -- Top 40%
-    { app = 'Console',          unit = portraitUnits.bottom60 }, -- Bottom 60%
+    { app = 'OpenLens',     unit = portraitUnits.thirds_top },    -- Top third
+    { app = 'DataGrip',     unit = portraitUnits.thirds_mid },    -- Middle third  
+    { app = 'Docker Desktop', unit = portraitUnits.thirds_bot },  -- Bottom third
   },
   communication = {
-    { app = 'Slack',       unit = portraitUnits.thirds_top },    -- Top third
-    { app = 'Messages',    unit = portraitUnits.thirds_mid },    -- Middle third
-    { app = 'Discord',     unit = portraitUnits.thirds_bot },    -- Bottom third
+    { app = 'Discord',     unit = portraitUnits.thirds_top },    -- Top third (least used)
+    { app = 'Slack',       unit = portraitUnits.thirds_mid },    -- Middle third (most used)
+    { app = 'Messages',    unit = portraitUnits.thirds_bot },    -- Bottom third (second most)
+  },
+  meeting = {
+    { app = 'Fantastical', unit = { x = 0.00, y = 0.00, w = 1.00, h = 0.50 } }, -- Top half
+    { app = 'Slack',       unit = { x = 0.00, y = 0.50, w = 1.00, h = 0.50 } }, -- Bottom half
+    -- Other monitors handled in special logic
   },
   coding = {
     -- Portrait monitor apps
@@ -197,8 +198,61 @@ local function runPortraitLayout(layoutName)
     return
   end
   
+  -- Special handling for meeting layout
+  if layoutName == "meeting" then
+    local leftMonitor = getLeftMonitor()
+    local middleMonitor = getMiddleMonitor()
+    
+    -- Launch apps if not running
+    local appsToLaunch = {'Google Chrome', 'Granola', 'iTerm', 'Fantastical', 'Slack'}
+    for _, appName in ipairs(appsToLaunch) do
+      if not hs.application.get(appName) then
+        hs.application.launchOrFocus(appName)
+      end
+    end
+    
+    -- Wait for apps to launch
+    hs.timer.doAfter(1.5, function()
+      -- Middle monitor: Chrome centered at 70%
+      if middleMonitor then
+        local chrome = hs.application.get('Google Chrome')
+        if chrome then
+          chrome:activate()
+          local windows = chrome:allWindows()
+          if #windows > 0 then
+            -- Centered 70% width and height
+            windows[1]:move({x=0.15, y=0.15, w=0.7, h=0.7}, middleMonitor, true)
+          end
+        end
+      end
+      
+      -- Left monitor layout
+      if leftMonitor then
+        -- Granola: left 30%
+        local granola = hs.application.get('Granola')
+        if granola then
+          granola:activate()
+          local windows = granola:allWindows()
+          for _, window in ipairs(windows) do
+            window:move({x=0, y=0, w=0.3, h=1}, leftMonitor, true)
+          end
+        end
+        
+        -- iTerm: remaining right 70%
+        hs.timer.doAfter(0.3, function()
+          local iterm = hs.application.get('iTerm')
+          if iterm then
+            iterm:activate()
+            local windows = iterm:allWindows()
+            for _, window in ipairs(windows) do
+              window:move({x=0.3, y=0, w=0.7, h=1}, leftMonitor, true)
+            end
+          end
+        end)
+      end
+    end)
   -- Special handling for coding layout
-  if layoutName == "coding" then
+  elseif layoutName == "coding" then
     local leftMonitor = getLeftMonitor()
     local middleMonitor = getMiddleMonitor()
     
@@ -256,8 +310,8 @@ local function runPortraitLayout(layoutName)
     end)
   end
   
-  -- Launch apps if not running (for non-coding layouts)
-  if layoutName ~= "coding" then
+  -- Launch apps if not running (for non-coding and non-meeting layouts)
+  if layoutName ~= "coding" and layoutName ~= "meeting" then
     for _, item in ipairs(layout) do
       if not hs.application.get(item.app) then
         hs.application.launchOrFocus(item.app)
@@ -288,12 +342,16 @@ local function runPortraitLayout(layoutName)
     end
   end
   
-  -- For non-coding layouts, wait a bit for apps to launch
-  if layoutName ~= "coding" then
-    hs.timer.doAfter(1, applyLayoutFn)
-  else
+  -- Apply layouts with appropriate timing
+  if layoutName == "coding" then
     -- Coding layout applies portrait apps after other monitors are done
     hs.timer.doAfter(2, applyLayoutFn)
+  elseif layoutName == "meeting" then
+    -- Meeting layout applies portrait apps after other monitors are done
+    hs.timer.doAfter(2, applyLayoutFn)  
+  else
+    -- Other layouts (communication, monitoring) wait for apps to launch
+    hs.timer.doAfter(1.5, applyLayoutFn)
   end
   
   showAlertOnScreen(layoutName:gsub("^%l", string.upper) .. " layout applied", portraitScreen, 1.5)
@@ -305,24 +363,21 @@ hs.hotkey.bind(hyper, "9", function()
 end)
 
 hs.hotkey.bind(hyper, "6", function() 
-  runPortraitLayout("productivity")  -- Portrait productivity layout
+  runPortraitLayout("meeting")       -- Meeting layout
 end)
 
 hs.hotkey.bind(hyper, "5", function() 
-  runPortraitLayout("monitoring")    -- Portrait monitoring layout  
+  runPortraitLayout("monitoring")    -- Monitoring layout  
 end)
 
 hs.hotkey.bind(hyper, "4", function() 
-  runPortraitLayout("communication") -- Portrait communication layout
+  runPortraitLayout("communication") -- Communication layout
 end)
 
 hs.hotkey.bind(hyper, "3", function() 
-  runPortraitLayout("coding")        -- Portrait coding layout
+  runPortraitLayout("coding")        -- Coding layout
 end)
 
-hs.hotkey.bind(hyper, "2", function()
-  debugPortraitScreen()              -- Debug portrait screen info
-end)
 
 -- Auto-position Spotify when launched
 local appWatcher = hs.application.watcher.new(function(name, event, app)
