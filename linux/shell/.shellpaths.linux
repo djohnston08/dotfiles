@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Linux-specific PATH additions
+
+# Common Linux system paths
+export PATH="/usr/local/bin:$PATH"
+
+# Python user packages (Linux location)
+if [ -d "$HOME/.local/bin" ]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
+# Snap packages (if using Ubuntu/Debian)
+if [ -d "/snap/bin" ]; then
+    export PATH="/snap/bin:$PATH"
+fi
+
+# Flatpak applications
+if [ -d "/var/lib/flatpak/exports/bin" ]; then
+    export PATH="/var/lib/flatpak/exports/bin:$PATH"
+fi

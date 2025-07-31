@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# macOS-specific aliases
+
+# Sail aliases (Laravel development)
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+alias arty='sail artisan'
+alias sud='sail up -d'
+
+# Tailscale alias (macOS app path)
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+
+# Docker aliases specific to macOS
+alias run-golinks='docker run --rm -d -u root -e "TS_AUTHKEY=tskey-auth-kXFtme3LdK11CNTRL-MZDErzrEoP8JTEKpSYz6V8hLTuuRkKFk2" -v /Users/djohnston/golink_data:/home/nonroot ghcr.io/tailscale/golink:main'

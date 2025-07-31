@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal dotfiles for macOS development environment with Zsh, Neovim, and Hammerspoon configurations optimized for the ZSA Voyager keyboard.
+Cross-platform dotfiles supporting both macOS and Linux environments with Zsh, Neovim, and (on macOS) Hammerspoon configurations optimized for the ZSA Voyager keyboard.
 
 ## Overview
 
@@ -17,35 +17,63 @@ This repository contains my personal configuration files for:
 # Clone the repository
 git clone https://github.com/djohnston08/dotfiles.git ~/projects/dotfiles
 
-# Run the installer
+# Run the unified installer (works on both macOS and Linux)
 cd ~/projects/dotfiles
+./install-unified.sh
+
+# Or use the original macOS-only installer
 ./install.sh
 ```
 
-The installer will:
-1. Install prerequisites (Homebrew, nvm, Node.js LTS)
-2. Set Zsh as the default shell
-3. Backup existing dotfiles to `~/.dotfiles_backup/[timestamp]/`
-4. Create symlinks from `homedir/*` to `~/*`
-5. Install all Homebrew packages from the Brewfile
+The unified installer will:
+1. Detect your operating system (macOS or Linux)
+2. Install platform-specific prerequisites
+3. Set Zsh as the default shell
+4. Backup existing dotfiles to `~/.dotfiles_backup/[timestamp]/`
+5. Create symlinks for common and platform-specific configurations
+6. On macOS: Install Homebrew packages from the Brewfile
+7. On Linux: Install essential packages via your distribution's package manager
 
 ## Directory Structure
 
 ```
 dotfiles/
-├── homedir/          # All dotfiles that get symlinked to ~/
+├── common/           # Cross-platform configurations
+│   └── shell/        # Shell configs that work everywhere
+│       ├── .shellaliases.common
+│       ├── .shellvars.common
+│       └── .shellpaths.common
+├── macos/            # macOS-specific configurations
+│   ├── install.sh    # macOS installer
+│   └── shell/        # macOS shell configs
+│       ├── .shellaliases.macos
+│       ├── .shellvars.macos
+│       └── .shellpaths.macos
+├── linux/            # Linux-specific configurations
+│   ├── install.sh    # Linux installer
+│   └── shell/        # Linux shell configs
+│       ├── .shellaliases.linux
+│       ├── .shellvars.linux
+│       └── .shellpaths.linux
+├── lib/              # Shared libraries
+│   ├── platform.sh   # Platform detection
+│   └── common.sh     # Common functions
+├── homedir/          # Dotfiles symlinked to ~/
 │   ├── .zshrc        # Main Zsh configuration
-│   ├── .profile      # Shell variables, functions, paths, aliases
-│   ├── .shellvars    # Environment variables (contains API keys)
-│   ├── .hammerspoon/ # Window management configuration
+│   ├── .profile      # Shell loader
+│   ├── .shellvars    # Sources common + platform vars
+│   ├── .shellaliases # Sources common + platform aliases
+│   ├── .shellpaths   # Sources common + platform paths
+│   ├── .hammerspoon/ # macOS window management
 │   └── nvim/         # Neovim configuration
 ├── ohmyzsh/          # Full Oh My Zsh installation
-├── scripts/          # Utility scripts (linked to ~/.local/bin/)
-├── themes/           # Custom "headline" Zsh theme
-├── plugins/          # Custom git plugin
-├── Brewfile          # Homebrew package definitions
-├── install.sh        # Installation script
-└── CLAUDE.md         # AI coding assistant instructions
+├── scripts/          # Utility scripts
+├── themes/           # Custom Zsh theme
+├── plugins/          # Custom plugins
+├── Brewfile          # Homebrew packages (macOS)
+├── install-unified.sh # Cross-platform installer
+├── install.sh        # Legacy macOS installer
+└── CLAUDE.md         # AI assistant instructions
 ```
 
 ## Key Features
@@ -54,8 +82,14 @@ dotfiles/
 
 The shell configuration follows this loading order:
 1. `.zshrc` → Sources Oh My Zsh, nvm, custom theme, and `.zprofile`
-2. `.zprofile` → Sources `.profile` and sets up Python/Homebrew paths
+2. `.zprofile` → Sources `.profile` and sets up platform-specific paths
 3. `.profile` → Sources `.shellvars`, `.shellfn`, `.shellpaths`, `.shellaliases`
+4. Each shell config file sources common configurations first, then platform-specific ones
+
+**Platform Detection**: Shell files automatically detect the OS and load appropriate configurations:
+- Common configurations are shared between platforms
+- macOS-specific configs include Homebrew paths, Tailscale aliases, etc.
+- Linux-specific configs include package manager aliases, system paths, etc.
 
 ### Neovim Setup
 
@@ -65,7 +99,7 @@ Modern Neovim configuration using:
 - LSP support for multiple languages
 - Custom keymaps and themes
 
-### Hammerspoon Window Management
+### Hammerspoon Window Management (macOS only)
 
 Modular Hammerspoon configuration with:
 - Portrait monitor detection and layouts
@@ -75,7 +109,7 @@ Modular Hammerspoon configuration with:
 
 See [Hammerspoon Key Reference](#hammerspoon-key-reference) below for all keyboard shortcuts.
 
-## Hammerspoon Key Reference
+## Hammerspoon Key Reference (macOS only)
 
 ### Key Modifiers
 - **Hyper**: `Cmd + Alt + Ctrl + Shift`
@@ -167,9 +201,23 @@ Located in `scripts/` and symlinked to `~/.local/bin/`:
 
 ## Common Tasks
 
-### Update Homebrew Packages
+### Update Packages
+
+**macOS (Homebrew):**
 ```bash
 brew bundle
+```
+
+**Linux (varies by distribution):**
+```bash
+# Debian/Ubuntu
+sudo apt update && sudo apt upgrade
+
+# Arch/Manjaro
+sudo pacman -Syu
+
+# Fedora
+sudo dnf update
 ```
 
 ### Update Oh My Zsh
@@ -178,25 +226,56 @@ cd ~/projects/dotfiles/ohmyzsh && git pull
 ```
 
 ### Add New Dotfiles
-1. Add the file to `homedir/` directory
-2. Run `./install.sh` to create symlinks
+1. Determine if the config is common or platform-specific
+2. Add to appropriate directory:
+   - Common: `common/shell/`
+   - macOS: `macos/shell/` or `homedir/` (for macOS-only apps)
+   - Linux: `linux/shell/`
+3. Run `./install-unified.sh` to create symlinks
 
-### Add New Homebrew Packages
+### Add New Packages
+
+**macOS:**
 1. Add to `Brewfile`
 2. Run `brew bundle`
+
+**Linux:**
+1. Update the package list in `linux/install.sh`
+2. Re-run the installer or install manually
 
 ## Security Note
 
 The `.shellvars` file contains API keys and sensitive environment variables. This file should be secured appropriately and not committed with actual keys.
+
+## Platform Support
+
+### macOS
+- Full feature support including Hammerspoon window management
+- Homebrew package management
+- macOS-specific shell configurations
+- Tested on macOS 13+ (Ventura and later)
+
+### Linux
+- Shell configurations (Zsh, aliases, paths)
+- Neovim setup
+- Package management for major distributions:
+  - Debian/Ubuntu (apt)
+  - Arch/Manjaro (pacman)
+  - Fedora/RHEL (yum/dnf)
+- Essential development tools installation
 
 ## Customization
 
 To customize for your own use:
 1. Fork this repository
 2. Update personal information in `.gitconfig`
-3. Modify `.shellvars` with your own API keys
-4. Adjust Hammerspoon app shortcuts in `homedir/.hammerspoon/app-launcher.lua`
-5. Update the Brewfile with your preferred packages
+3. Modify shell variables:
+   - Common: `common/shell/.shellvars.common`
+   - Platform-specific: `{macos,linux}/shell/.shellvars.{macos,linux}`
+4. For macOS: Adjust Hammerspoon app shortcuts in `homedir/.hammerspoon/app-launcher.lua`
+5. Update package lists:
+   - macOS: Edit `Brewfile`
+   - Linux: Edit `linux/install.sh`
 
 ## Troubleshooting
 
@@ -214,6 +293,18 @@ Verify that Zsh is the default shell:
 echo $SHELL  # Should output /bin/zsh
 chsh -s /bin/zsh  # Set as default if needed
 ```
+
+## Requirements
+
+### macOS
+- macOS 13+ (Ventura or later)
+- Command Line Tools for Xcode
+- Git
+
+### Linux
+- A supported distribution (Debian/Ubuntu, Arch, Fedora, etc.)
+- Git
+- sudo access for package installation
 
 ## License
 

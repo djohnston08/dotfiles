@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Linux-specific environment variables
+
+# Common Linux development paths
+if [ -d /usr/lib/jvm/default ]; then
+    export JAVA_HOME=/usr/lib/jvm/default
+elif [ -d /usr/lib/jvm/java-17-openjdk ]; then
+    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+fi
+
+# Android SDK typical Linux location
+if [ -d $HOME/Android/Sdk ]; then
+    export ANDROID_HOME=$HOME/Android/Sdk
+fi

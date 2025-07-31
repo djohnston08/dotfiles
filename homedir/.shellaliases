@@ -1,30 +1,11 @@
 #!/bin/sh
 
-alias .f='cd $HOME/projects/dotfiles'
+# Source common aliases
+source ~/projects/dotfiles/common/shell/.shellaliases.common
 
-
-alias vim='nvim'
-
-alias ls='ls -h -p '
-alias ll='ls -al -h -p '
-
-alias refresh='exec zsh'
-alias po='popd'
-
-# Sail aliases
-alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
-alias arty='sail artisan'
-alias sud='sail up -d'
-
-# TMUX aliases
-alias td='tmux detach'
-alias ta='tmux attach'
-
-# kubernetes aliases
-alias k='kubectl'
-
-alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
-
-alias run-golinks='docker run --rm -d -u root -e "TS_AUTHKEY=tskey-auth-kXFtme3LdK11CNTRL-MZDErzrEoP8JTEKpSYz6V8hLTuuRkKFk2" -v /Users/djohnston/golink_data:/home/nonroot ghcr.io/tailscale/golink:main'
-
-set -o vi
+# Source platform-specific aliases
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    source ~/projects/dotfiles/macos/shell/.shellaliases.macos
+elif [[ "$(uname -s)" == "Linux" ]]; then
+    source ~/projects/dotfiles/linux/shell/.shellaliases.linux
+fi

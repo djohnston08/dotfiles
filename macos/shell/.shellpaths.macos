@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# macOS-specific PATH additions
+
+# Python Path (macOS specific locations)
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+export PATH="/Users/djohnston/Library/Python/3.8/bin:$PATH"
+
+# mysql-client installed via brew
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+
+# Homebrew paths (both Intel and Apple Silicon)
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"

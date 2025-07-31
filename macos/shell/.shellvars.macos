@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# macOS-specific environment variables
+
+# Java path for macOS
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+
+# Android SDK path for macOS
+export ANDROID_HOME=/Users/djohnston/Library/Android/sdk

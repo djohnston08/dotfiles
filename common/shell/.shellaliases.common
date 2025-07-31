@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Navigation aliases
+alias .f='cd $HOME/projects/dotfiles'
+
+# Editor aliases
+alias vim='nvim'
+
+# Listing aliases
+alias ls='ls -h -p'
+alias ll='ls -al -h -p'
+
+# Shell management
+alias refresh='exec zsh'
+alias po='popd'
+
+# TMUX aliases
+alias td='tmux detach'
+alias ta='tmux attach'
+
+# Kubernetes aliases (works on both platforms)
+alias k='kubectl'
+
+# Enable vi mode in shell
+set -o vi

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Linux-specific aliases
+
+# Package management shortcuts (will adapt based on distro)
+if command -v apt >/dev/null 2>&1; then
+    alias update='sudo apt update && sudo apt upgrade'
+    alias install='sudo apt install'
+    alias search='apt search'
+elif command -v pacman >/dev/null 2>&1; then
+    alias update='sudo pacman -Syu'
+    alias install='sudo pacman -S'
+    alias search='pacman -Ss'
+elif command -v yum >/dev/null 2>&1; then
+    alias update='sudo yum update'
+    alias install='sudo yum install'
+    alias search='yum search'
+fi
+
+# System monitoring
+alias ports='netstat -tulanp'

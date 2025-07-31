@@ -1,29 +1,11 @@
-#My Scripts
-export PATH=$PATH:.
+#!/bin/sh
 
-# Composer
-export PATH="$HOME/.composer/vendor/bin:./vendor/bin:$PATH"
+# Source common paths
+source ~/projects/dotfiles/common/shell/.shellpaths.common
 
-# Node modules
-export PATH="./node_modules/.bin:$PATH"
-
-# GO
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:$(go env GOPATH)/bin
-
-# Python Path
-export PATH="/usr/local/opt/python/libexec/bin:$PATH"
-export PATH="/Users/djohnston/Library/Python/3.8/bin:$PATH"
-
-# Pip packages
-export PATH=$PATH:$HOME/.local/bin
-
-# mysql-client installed via brew
-export PATH="/usr/local/opt/mysql-client/bin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
-
-# android studio
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-cdpath=($HOME/projects $GOPATH/src)
+# Source platform-specific paths
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    source ~/projects/dotfiles/macos/shell/.shellpaths.macos
+elif [[ "$(uname -s)" == "Linux" ]]; then
+    source ~/projects/dotfiles/linux/shell/.shellpaths.linux
+fi

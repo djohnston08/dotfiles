@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Set vim as default editor
+export EDITOR="vim"
+
+# Common directory shortcuts
+export MYTEMP=~/tmp
+export MYCODE=~/projects
+export MYSCRATCH=~/Documents/scratch
+export MYDOWNLOADS=~/Downloads
+export MYDOCUMENTS=~/Documents
+
+# Common development paths
+export GOPATH=$HOME/go
+
+# NVM settings (cross-platform)
+export NVM_DIR=~/.nvm

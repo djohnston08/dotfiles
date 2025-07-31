@@ -1,26 +1,11 @@
-# Set vim as default editor (vi is the default otherwise)
-export EDITOR="vim"
-# bindkey -v
+#!/bin/sh
 
-#########################################################################
-# Temporary aliases useful for demos, other current projects
-#########################################################################
-export MYTEMP=~/tmp
-export MYCODE=~/projects
-export MYSCRATCH=~/Documents/scratch
-export MYDOWNLOADS=~/Downloads
-export MYDOCUMENTS=~/Documents
-# export MYDEVAPPS=/Applications/Dev
+# Source common variables
+source ~/projects/dotfiles/common/shell/.shellvars.common
 
-#########################################################################
-# Tool paths
-#########################################################################
-export GOPATH=$HOME/go
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-export ANDROID_HOME=/Users/djohnston/Library/Android/sdk
-
-#########################################################################
-# Tool settings
-#########################################################################
-export NVM_DIR=~/.nvm
-
+# Source platform-specific variables
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    source ~/projects/dotfiles/macos/shell/.shellvars.macos
+elif [[ "$(uname -s)" == "Linux" ]]; then
+    source ~/projects/dotfiles/linux/shell/.shellvars.linux
+fi

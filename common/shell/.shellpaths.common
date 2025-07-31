@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Common PATH additions
+
+# Current directory
+export PATH=$PATH:.
+
+# Composer (PHP)
+export PATH="$HOME/.composer/vendor/bin:./vendor/bin:$PATH"
+
+# Node modules
+export PATH="./node_modules/.bin:$PATH"
+
+# GO
+export PATH=$PATH:/usr/local/go/bin
+if command -v go >/dev/null 2>&1; then
+    export PATH=$PATH:$(go env GOPATH)/bin
+fi
+
+# User local bin (pip packages, custom scripts)
+export PATH=$PATH:$HOME/.local/bin
+
+# Android SDK (if ANDROID_HOME is set)
+if [ -n "$ANDROID_HOME" ]; then
+    export PATH=$PATH:$ANDROID_HOME/emulator
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
+fi
+
+# CD path for quick navigation
+cdpath=($HOME/projects $GOPATH/src)
