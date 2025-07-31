@@ -139,9 +139,11 @@ See [Hammerspoon Key Reference](#hammerspoon-key-reference) below for all keyboa
 
 ### Portrait Monitor Features
 - `Hyper + 9` → Quick position Spotify on portrait monitor
-- `Hyper + 6` → Productivity layout (Spotify, Linear, Slack)
+- `Hyper + 6` → Productivity layout (Spotify, Chrome, Slack)
 - `Hyper + 5` → Monitoring layout (Activity Monitor, Console)
 - `Hyper + 4` → Communication layout (Slack, Messages, Discord)
+- `Hyper + 3` → Coding layout (Spotify, iTerm)
+- `Hyper + 2` → Debug portrait screen info
 
 ### Other Controls
 - `Hyper + \` → Display current Spotify track
