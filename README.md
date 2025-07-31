@@ -142,7 +142,10 @@ See [Hammerspoon Key Reference](#hammerspoon-key-reference) below for all keyboa
 - `Hyper + 6` → Productivity layout (Spotify, Chrome, Slack)
 - `Hyper + 5` → Monitoring layout (Activity Monitor, Console)
 - `Hyper + 4` → Communication layout (Slack, Messages, Discord)
-- `Hyper + 3` → Coding layout (Spotify, iTerm)
+- `Hyper + 3` → Coding layout:
+  - Left monitor: Chrome (full width, top 70%), DataGrip (full width, bottom 30%)
+  - Middle monitor: iTerm fullscreen
+  - Portrait monitor: Spotify (top 20%), Linear (25% height), Claude (bottom 55%)
 - `Hyper + 2` → Debug portrait screen info
 
 ### Other Controls

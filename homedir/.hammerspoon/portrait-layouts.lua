@@ -70,14 +70,26 @@ local function positionSpotifyOnPortrait()
   end
   
   local spotify = hs.application.get('Spotify')
-  if spotify then
+  if not spotify then
+    -- Launch Spotify if not running
+    hs.application.launchOrFocus('Spotify')
+    showAlertOnScreen("Launching Spotify...", portraitScreen, 1.5)
+    -- Wait for it to launch then position it
+    hs.timer.doAfter(2, function()
+      local spotify = hs.application.get('Spotify')
+      if spotify then
+        local windows = spotify:allWindows()
+        for _, window in ipairs(windows) do
+          window:move(portraitUnits.top20, portraitScreen, true)
+        end
+      end
+    end)
+  else
     local windows = spotify:allWindows()
     for _, window in ipairs(windows) do
       window:move(portraitUnits.top20, portraitScreen, true)
     end
     showAlertOnScreen("Spotify positioned", portraitScreen, 1.5)
-  else
-    showAlertOnScreen("Spotify not running", portraitScreen, 2)
   end
 end
 
@@ -98,8 +110,11 @@ local portraitLayouts = {
     { app = 'Discord',     unit = portraitUnits.thirds_bot },    -- Bottom third
   },
   coding = {
-    { app = 'Spotify',          unit = portraitUnits.top20 },    -- Top 20%
-    { app = 'iTerm',            unit = portraitUnits.bottom70 }, -- Bottom 70% (overlaps for terminal)
+    -- Portrait monitor apps
+    { app = 'Spotify',          unit = portraitUnits.top20 },    -- Top 20% (0-20%)
+    { app = 'Linear',           unit = { x = 0.00, y = 0.20, w = 1.00, h = 0.25 } }, -- 25% height at 20-45%
+    { app = 'Claude',           unit = { x = 0.00, y = 0.45, w = 1.00, h = 0.55 } }, -- Bottom 55% starting at 45%
+    -- Other monitors handled in special logic
   }
 }
 
@@ -129,6 +144,45 @@ local function debugPortraitScreen()
   end
 end
 
+-- Get all landscape monitors sorted by position (left to right)
+local function getLandscapeMonitorsByPosition()
+  local screens = hs.screen.allScreens()
+  local landscapeScreens = {}
+  
+  -- Collect all landscape screens
+  for _, screen in ipairs(screens) do
+    local mode = screen:currentMode()
+    if mode.w > mode.h then
+      table.insert(landscapeScreens, screen)
+    end
+  end
+  
+  -- Sort by x position (left to right)
+  table.sort(landscapeScreens, function(a, b)
+    return a:frame().x < b:frame().x
+  end)
+  
+  return landscapeScreens
+end
+
+-- Get specific landscape monitor by position
+local function getLeftMonitor()
+  local monitors = getLandscapeMonitorsByPosition()
+  return monitors[1] -- First is leftmost
+end
+
+local function getMiddleMonitor()
+  local monitors = getLandscapeMonitorsByPosition()
+  -- If we have 2 landscape monitors, return the second (right) one as "middle"
+  -- If we have 3+, return the actual middle one
+  if #monitors == 2 then
+    return monitors[2]
+  elseif #monitors >= 3 then
+    return monitors[2]
+  end
+  return monitors[1] -- Fallback to first if only one
+end
+
 -- Portrait layout runner
 local function runPortraitLayout(layoutName)
   local portraitScreen = getPortraitScreen()
@@ -143,18 +197,103 @@ local function runPortraitLayout(layoutName)
     return
   end
   
+  -- Special handling for coding layout
+  if layoutName == "coding" then
+    local leftMonitor = getLeftMonitor()
+    local middleMonitor = getMiddleMonitor()
+    
+    -- Launch apps if not running
+    local appsToLaunch = {'iTerm', 'Google Chrome', 'DataGrip', 'Spotify', 'Linear', 'Claude'}
+    for _, appName in ipairs(appsToLaunch) do
+      if not hs.application.get(appName) then
+        hs.application.launchOrFocus(appName)
+      end
+    end
+    
+    -- Wait a bit for apps to launch
+    hs.timer.doAfter(1.5, function()
+      -- Left monitor layout
+      if leftMonitor then
+        -- Chrome: full width, top 70%
+        local chrome = hs.application.get('Google Chrome')
+        if chrome then
+          chrome:activate()  -- Bring to front
+          local windows = chrome:allWindows()
+          if #windows > 0 then
+            windows[1]:move({x=0, y=0, w=1, h=0.7}, leftMonitor, true)
+          end
+        end
+        
+        -- DataGrip: bottom full width, 30% tall
+        hs.timer.doAfter(2, function()
+          local datagrip = hs.application.get('DataGrip')
+          if datagrip then
+            datagrip:activate()  -- Bring to front
+            local windows = datagrip:allWindows()
+            for _, window in ipairs(windows) do
+              window:move({x=0, y=0.7, w=1, h=0.3}, leftMonitor, true)
+            end
+          end
+        end)
+      end
+      
+      -- Middle monitor: iTerm full screen (do this after DataGrip)
+      hs.timer.doAfter(2.5, function()
+        if middleMonitor then
+          local iterm = hs.application.get('iTerm')
+          if iterm then
+            local windows = iterm:allWindows()
+            for _, window in ipairs(windows) do
+              window:move({x=0, y=0, w=1, h=1}, middleMonitor, true)
+            end
+            -- Focus iTerm last
+            hs.timer.doAfter(3, function()
+              iterm:activate()
+            end)
+          end
+        end
+      end)
+    end)
+  end
+  
+  -- Launch apps if not running (for non-coding layouts)
+  if layoutName ~= "coding" then
+    for _, item in ipairs(layout) do
+      if not hs.application.get(item.app) then
+        hs.application.launchOrFocus(item.app)
+      end
+    end
+  end
+  
   -- Apply layout with slight delays to ensure proper positioning
-  for i, item in ipairs(layout) do
-    local app = hs.application.get(item.app)
-    if app then
-      local windows = app:allWindows()
-      for _, window in ipairs(windows) do
-        -- Add small delay between window moves to prevent overlap issues
-        hs.timer.doAfter(0.1 * (i-1), function()
-          window:move(item.unit, portraitScreen, true)
+  local applyLayoutFn = function()
+    for i, item in ipairs(layout) do
+      local app = hs.application.get(item.app)
+      if app then
+        -- Add delay between apps, with extra time for activation
+        hs.timer.doAfter(0.5 * (i-1), function()
+          local windows = app:allWindows()
+          for _, window in ipairs(windows) do
+            local unit = item.unit
+            -- Handle offset_y if specified
+            if item.offset_y then
+              unit = {x = unit.x, y = item.offset_y, w = unit.w, h = unit.h}
+            end
+            window:move(unit, portraitScreen, true)
+          end
+          -- Activate after positioning to ensure proper layering
+          app:activate()
         end)
       end
     end
+  end
+  
+  -- For non-coding layouts, wait a bit for apps to launch
+  if layoutName ~= "coding" then
+    hs.timer.doAfter(1, applyLayoutFn)
+  else
+    -- Coding layout applies portrait apps after other monitors are done
+    hs.timer.doAfter(2, applyLayoutFn)
   end
   
   showAlertOnScreen(layoutName:gsub("^%l", string.upper) .. " layout applied", portraitScreen, 1.5)
