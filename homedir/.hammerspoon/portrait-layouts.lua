@@ -271,28 +271,32 @@ local function runPortraitLayout(layoutName)
         -- Chrome: full width, top 70%
         local chrome = hs.application.get('Google Chrome')
         if chrome then
-          chrome:activate()  -- Bring to front
           local windows = chrome:allWindows()
           if #windows > 0 then
             windows[1]:move({x=0, y=0, w=1, h=0.7}, leftMonitor, true)
           end
         end
         
-        -- DataGrip: bottom full width, 30% tall
-        hs.timer.doAfter(2, function()
+        -- DataGrip: bottom full width, 60% tall (overlapping with Chrome)
+        hs.timer.doAfter(0.5, function()
           local datagrip = hs.application.get('DataGrip')
           if datagrip then
-            datagrip:activate()  -- Bring to front
             local windows = datagrip:allWindows()
             for _, window in ipairs(windows) do
-              window:move({x=0, y=0.7, w=1, h=0.3}, leftMonitor, true)
+              window:move({x=0, y=0.4, w=1, h=0.6}, leftMonitor, true)
             end
+            -- Focus Chrome after DataGrip to ensure it's on top
+            hs.timer.doAfter(0.5, function()
+              if chrome then
+                chrome:activate()
+              end
+            end)
           end
         end)
       end
       
       -- Middle monitor: iTerm full screen (do this after DataGrip)
-      hs.timer.doAfter(2.5, function()
+      hs.timer.doAfter(1.5, function()
         if middleMonitor then
           local iterm = hs.application.get('iTerm')
           if iterm then
@@ -301,7 +305,7 @@ local function runPortraitLayout(layoutName)
               window:move({x=0, y=0, w=1, h=1}, middleMonitor, true)
             end
             -- Focus iTerm last
-            hs.timer.doAfter(3, function()
+            hs.timer.doAfter(1, function()
               iterm:activate()
             end)
           end

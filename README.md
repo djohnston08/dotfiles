@@ -182,9 +182,10 @@ See [Hammerspoon Key Reference](#hammerspoon-key-reference) below for all keyboa
 - `Hyper + 4` → Communication layout:
   - Portrait monitor: Discord (top), Slack (middle), Messages (bottom)
 - `Hyper + 3` → Coding layout:
-  - Left monitor: Chrome (full width, top 70%), DataGrip (full width, bottom 30%)
+  - Left monitor: Chrome (full width, top 70%), DataGrip (bottom 60%, overlapping)
   - Middle monitor: iTerm fullscreen
   - Portrait monitor: Spotify (top 20%), Linear (25% height), Claude (bottom 55%)
+  - Note: DataGrip overlaps behind Chrome for quick access via app switcher
 
 ### Other Controls
 - `Hyper + \` → Display current Spotify track
