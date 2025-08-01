@@ -11,4 +11,4 @@ alias sud='sail up -d'
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
 # Docker aliases specific to macOS
-alias run-golinks='docker run --rm -d -u root -e "TS_AUTHKEY=tskey-auth-kXFtme3LdK11CNTRL-MZDErzrEoP8JTEKpSYz6V8hLTuuRkKFk2" -v /Users/djohnston/golink_data:/home/nonroot ghcr.io/tailscale/golink:main'
+alias run-golinks='docker run --rm -d -u root -e "TS_AUTHKEY=${TS_AUTHKEY}" -v /Users/djohnston/golink_data:/home/nonroot ghcr.io/tailscale/golink:main'

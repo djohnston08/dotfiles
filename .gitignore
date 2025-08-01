@@ -27,3 +27,8 @@ z-zsh/
 # Neovim plugin lockfile
 homedir/nvim/lazy-lock.json
 
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.*.local
+

@@ -7,3 +7,8 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 
 # Android SDK path for macOS
 export ANDROID_HOME=/Users/djohnston/Library/Android/sdk
+
+# Source .env file if it exists (for secrets)
+if [ -f "$HOME/projects/dotfiles/.env" ]; then
+    source "$HOME/projects/dotfiles/.env"
+fi
