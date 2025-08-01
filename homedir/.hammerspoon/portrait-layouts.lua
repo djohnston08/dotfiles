@@ -268,16 +268,16 @@ local function runPortraitLayout(layoutName)
     hs.timer.doAfter(1.5, function()
       -- Left monitor layout
       if leftMonitor then
-        -- Chrome: full width, top 70%
+        -- Chrome: 90% width, 88% height, slightly offset from edges
         local chrome = hs.application.get('Google Chrome')
         if chrome then
           local windows = chrome:allWindows()
           if #windows > 0 then
-            windows[1]:move({x=0, y=0, w=1, h=0.7}, leftMonitor, true)
+            windows[1]:move({x=0.05, y=0.066, w=0.9, h=0.88}, leftMonitor, true)
           end
         end
         
-        -- DataGrip: bottom full width, 60% tall (overlapping with Chrome)
+        -- DataGrip: bottom 60% of screen, full width
         hs.timer.doAfter(0.5, function()
           local datagrip = hs.application.get('DataGrip')
           if datagrip then
