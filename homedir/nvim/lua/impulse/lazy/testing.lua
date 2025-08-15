@@ -27,8 +27,10 @@ EOF
 
           let g:test#custom_strategies = {'toggleterm': function('ToggletermStrategy')}
           let g:test#strategy = 'toggleterm'
-          let g:test#runner_commands = ['PHPUnit']
+          let g:test#runner_commands = ['PHPUnit', 'PyTest']
           let g:test#php#phpunit#executable = 'sail artisan test'
+          let g:test#python#runner = 'pytest'
+          let g:test#python#pytest#options = '--tb=short -v'
         ]])
 
         vim.keymap.set("n", "<Leader>ds", ":let test#php#phpunit#executable = 'sail debug test'<cr>")

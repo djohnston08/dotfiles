@@ -5,9 +5,22 @@ return {
 			"rcarriga/nvim-dap-ui",
 			"nvim-neotest/nvim-nio",
 			"theHamsta/nvim-dap-virtual-text",
+			"mfussenegger/nvim-dap-python",
+			"jay-babu/mason-nvim-dap.nvim",
 		},
 		config = function()
 			local dap, dapui = require("dap"), require("dapui")
+
+			-- Ensure debugpy is installed via Mason
+			require("mason-nvim-dap").setup({
+				ensure_installed = { "python" },
+				handlers = {},
+			})
+
+			-- Setup Python debugging
+			local dap_python = require("dap-python")
+			dap_python.setup("~/.local/share/nvim/mason/packages/debugpy/venv/bin/python")
+			dap_python.test_runner = "pytest"
 
 			dap.adapters.php = {
 				type = "executable",

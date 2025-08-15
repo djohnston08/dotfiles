@@ -18,6 +18,40 @@ return {
 		},
 		config = function()
 			vim.g.projectionist_heuristics = {
+				["requirements.txt|pyproject.toml|setup.py"] = {
+					["*.py"] = {
+						type = "source",
+						alternate = {
+							"tests/test_{}.py",
+							"tests/{}_test.py",
+							"test_{}.py",
+							"{}_test.py",
+						},
+					},
+					["tests/test_*.py"] = {
+						type = "test",
+						alternate = "{}.py",
+					},
+					["tests/*_test.py"] = {
+						type = "test",
+						alternate = "{}.py",
+					},
+					["test_*.py"] = {
+						type = "test",
+						alternate = "{}.py",
+					},
+					["*_test.py"] = {
+						type = "test",
+						alternate = "{}.py",
+					},
+					["src/*.py"] = {
+						type = "source",
+						alternate = {
+							"tests/test_{}.py",
+							"tests/{}_test.py",
+						},
+					},
+				},
 				["artisan"] = {
 					["*"] = {
 						console = "sail artisan tinker",
@@ -97,6 +131,7 @@ return {
 					php = { "pint" },
 					sh = { "shfmt" },
 					javascript = { "prettierd" },
+					python = { "ruff_format", "ruff_organize_imports" },
 				},
 				formatters = {
 					injected = { options = { ignore_errors = true } },

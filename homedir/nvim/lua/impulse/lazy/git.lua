@@ -95,27 +95,6 @@ return {
 			end, { desc = "Create git worktree" })
 		end,
 	},
-	-- Branch-aware session management
-	{
-		"olimorris/persisted.nvim",
-		lazy = false, -- Load immediately to handle sessions
-		config = function()
-			require("persisted").setup({
-				use_git_branch = true,
-				autoload = true,
-				on_autoload_no_session = function()
-					vim.notify("No session found", vim.log.levels.INFO)
-				end,
-				should_autosave = function()
-					-- Don't save if we're in a git worktree outside main project
-					if vim.fn.argc() > 0 then
-						return false
-					end
-					return true
-				end,
-			})
-		end,
-	},
 	-- Git integration.
 	{
 		"lewis6991/gitsigns.nvim",

@@ -51,6 +51,8 @@ return {
 				"gopls",
 				"ts_ls",
 				"angularls",
+				"pyright",
+				"ruff_lsp",
 			},
 			handlers = {
 				function(server_name) -- default handler (optional)
@@ -78,6 +80,33 @@ return {
 						capabilities = capabilities,
 						init_options = {
 							licenceKey = get_intelephense_license(),
+						},
+					})
+				end,
+				["pyright"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.pyright.setup({
+						capabilities = capabilities,
+						settings = {
+							python = {
+								analysis = {
+									autoSearchPaths = true,
+									typeCheckingMode = "standard",
+									useLibraryCodeForTypes = true,
+									diagnosticMode = "workspace",
+								},
+							},
+						},
+					})
+				end,
+				["ruff_lsp"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.ruff_lsp.setup({
+						capabilities = capabilities,
+						init_options = {
+							settings = {
+								args = {},
+							},
 						},
 					})
 				end,
