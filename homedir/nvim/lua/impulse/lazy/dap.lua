@@ -22,6 +22,22 @@ return {
 			dap_python.setup("~/.local/share/nvim/mason/packages/debugpy/venv/bin/python")
 			dap_python.test_runner = "pytest"
 
+			-- Load project-specific DAP configurations if they exist
+			local function load_project_dap_config()
+				local project_config = vim.fn.getcwd() .. "/.nvim/dap-config.lua"
+				if vim.fn.filereadable(project_config) == 1 then
+					dofile(project_config)
+				end
+			end
+
+			-- Load on startup
+			load_project_dap_config()
+
+			-- Reload when changing directories
+			vim.api.nvim_create_autocmd("DirChanged", {
+				callback = load_project_dap_config,
+			})
+
 			dap.adapters.php = {
 				type = "executable",
 				command = "node",
@@ -47,9 +63,9 @@ return {
 					{
 						elements = {
 							-- { id = "scopes", size = 0.25 },
-							{ id = "scopes", size = 0.5 },
-							-- "breakpoints",
-							-- "stacks",
+							{ id = "scopes", size = 0.3 },
+							{ id = "breakpoints", size = 0.3 },
+							{ id = "stacks", size = 0.2 },
 							"watches",
 						},
 						size = 100, -- 100 columns

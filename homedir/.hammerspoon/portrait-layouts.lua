@@ -111,10 +111,10 @@ local portraitLayouts = {
     -- Other monitors handled in special logic
   },
   coding = {
-    -- Portrait monitor apps
-    { app = 'Spotify',          unit = portraitUnits.top20 },    -- Top 20% (0-20%)
-    { app = 'Linear',           unit = { x = 0.00, y = 0.20, w = 1.00, h = 0.25 } }, -- 25% height at 20-45%
-    { app = 'Claude',           unit = { x = 0.00, y = 0.45, w = 1.00, h = 0.55 } }, -- Bottom 55% starting at 45%
+    -- Portrait monitor apps (exact positions from captured layout)
+    { app = 'Spotify',          unit = { x = 0.00, y = 0.00, w = 1.00, h = 0.234 } },  -- Top 23.4% (600px of 2560px)
+    { app = 'Linear',           unit = { x = 0.00, y = 0.234, w = 1.00, h = 0.259 } }, -- 25.9% height (662px of 2560px)
+    { app = 'Slack',            unit = { x = 0.00, y = 0.493, w = 1.00, h = 0.507 } }, -- Bottom 50.7% (1267px of ~2500px)
     -- Other monitors handled in special logic
   }
 }
@@ -257,7 +257,7 @@ local function runPortraitLayout(layoutName)
     local middleMonitor = getMiddleMonitor()
     
     -- Launch apps if not running
-    local appsToLaunch = {'iTerm', 'Google Chrome', 'DataGrip', 'Spotify', 'Linear', 'Claude'}
+    local appsToLaunch = {'iTerm', 'Google Chrome', 'DataGrip', 'Spotify', 'Linear', 'Slack'}
     for _, appName in ipairs(appsToLaunch) do
       if not hs.application.get(appName) then
         hs.application.launchOrFocus(appName)
