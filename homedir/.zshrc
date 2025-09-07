@@ -30,3 +30,9 @@ source ~/.zprofile
 unsetopt correct
 
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+# gag alias and completion (added by gag-install.sh)
+alias gag='/Users/djohnston/projects/gag/gag'
+# Enable bash completion compatibility for zsh
+autoload -U +X bashcompinit && bashcompinit
+source '/Users/djohnston/projects/gag/gag-completion.bash'
