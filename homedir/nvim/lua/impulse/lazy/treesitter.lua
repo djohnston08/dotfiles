@@ -2,11 +2,14 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	dependencies = {
 		"JoosepAlviste/nvim-ts-context-commentstring",
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		"nvim-treesitter/nvim-treesitter-textobjects",
+		{
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			lazy = true,  -- Load only when treesitter is ready
+		},
 	},
 
 	build = ":TSUpdate",
+	event = { "BufReadPost", "BufNewFile" },  -- Lazy load treesitter
 	config = function()
 		require("nvim-treesitter.configs").setup({
 			-- A list of parser names, or "all"
