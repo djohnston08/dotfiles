@@ -11,10 +11,10 @@ PKG_MANAGER=$(get_package_manager)
 bot "Detected Linux distribution: $DISTRO"
 bot "Package manager: $PKG_MANAGER"
 
-# Install essential packages based on package manager
+# Install essential packages based on package manager (excludes neovim - installed separately)
 install_linux_essentials() {
     bot "Installing essential packages..."
-    
+
     case "$PKG_MANAGER" in
         apt)
             sudo apt update
@@ -22,12 +22,12 @@ install_linux_essentials() {
                 curl \
                 git \
                 zsh \
-                neovim \
                 tmux \
                 ripgrep \
                 fd-find \
                 build-essential \
-                python3-pip
+                python3-pip \
+                fuse  # Required for AppImage
             ;;
         yum)
             sudo yum update -y
@@ -35,14 +35,14 @@ install_linux_essentials() {
                 curl \
                 git \
                 zsh \
-                neovim \
                 tmux \
                 ripgrep \
                 fd-find \
                 gcc \
                 gcc-c++ \
                 make \
-                python3-pip
+                python3-pip \
+                fuse
             ;;
         pacman)
             sudo pacman -Syu --noconfirm
@@ -50,19 +50,39 @@ install_linux_essentials() {
                 curl \
                 git \
                 zsh \
-                neovim \
                 tmux \
                 ripgrep \
                 fd \
                 base-devel \
-                python-pip
+                python-pip \
+                fuse2
             ;;
         *)
             error "Unsupported package manager: $PKG_MANAGER"
             error "Please install the following packages manually:"
-            error "curl, git, zsh, neovim, tmux, ripgrep, fd, build tools, python3-pip"
+            error "curl, git, zsh, tmux, ripgrep, fd, build tools, python3-pip, fuse"
             ;;
     esac
+}
+
+# Install Neovim via AppImage (apt version is typically outdated)
+install_neovim() {
+    bot "Installing Neovim (AppImage)..."
+
+    local nvim_dir="$HOME/.local/bin"
+    local nvim_appimage="$nvim_dir/nvim.appimage"
+
+    mkdir -p "$nvim_dir"
+
+    # Download latest Neovim AppImage
+    curl -L -o "$nvim_appimage" \
+        'https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage'
+    chmod +x "$nvim_appimage"
+
+    # Create symlink for 'nvim' command
+    ln -sf "$nvim_appimage" "$nvim_dir/nvim"
+
+    ok "Neovim installed: $($nvim_dir/nvim --version | head -1)"
 }
 
 # Install Node.js via nvm
@@ -109,10 +129,13 @@ install_linux_tools() {
 linux_post_install() {
     # Install essential packages
     install_linux_essentials
-    
+
+    # Install Neovim (via AppImage for latest version)
+    install_neovim
+
     # Install Node.js
     install_nodejs
-    
+
     # Install additional tools
     install_linux_tools
     
