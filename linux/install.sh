@@ -27,7 +27,8 @@ install_linux_essentials() {
                 fd-find \
                 build-essential \
                 python3-pip \
-                fuse  # Required for AppImage
+                fuse \
+                luarocks  # Required for some Neovim plugins
             ;;
         yum)
             sudo yum update -y
@@ -42,7 +43,8 @@ install_linux_essentials() {
                 gcc-c++ \
                 make \
                 python3-pip \
-                fuse
+                fuse \
+                luarocks
             ;;
         pacman)
             sudo pacman -Syu --noconfirm
@@ -55,7 +57,8 @@ install_linux_essentials() {
                 fd \
                 base-devel \
                 python-pip \
-                fuse2
+                fuse2 \
+                luarocks
             ;;
         *)
             error "Unsupported package manager: $PKG_MANAGER"
