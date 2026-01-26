@@ -1,3 +1,5 @@
+local uv = vim.uv or vim.loop  -- vim.uv requires nvim 0.10+, fallback to vim.loop
+
 local get_intelephense_license = function()
 	local f = assert(io.open(os.getenv("HOME") .. "/intelephense/license.txt", "rb"))
 
@@ -126,12 +128,12 @@ return {
 						"--tsProbeLocations",
 						table.concat({
 							angularls_path,
-							vim.uv.cwd(),
+							uv.cwd(),
 						}, ","),
 						"--ngProbeLocations",
 						table.concat({
 							angularls_path .. "/node_modules/@angular/language-server",
-							vim.uv.cwd(),
+							uv.cwd(),
 						}, ","),
 					}
 					lspconfig.angularls.setup({
