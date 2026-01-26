@@ -14,23 +14,19 @@ setopt    appendhistory     #Append history to the history file (no overwriting)
 setopt    sharehistory      #Share history across terminals
 setopt    incappendhistory  #Immediately append to the history file, not just when a term is killed
 
-# Setting PATH for Python 3.6
-# The original version is saved in .zprofile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
+# macOS-specific paths and Homebrew setup
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Setting PATH for Python 3.6
+    PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
 
-export PATH
+    # Setting PATH for Python 3.12
+    PATH="/Library/Frameworks/Python.framework/Versions/3.12/bin:${PATH}"
+    export PATH
 
-if [ -f brew ]; then
-    eval "$(brew shellenv)"
-fi
-
-# Setting PATH for Python 3.12
-# The original version is saved in .zprofile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.12/bin:${PATH}"
-export PATH
-
-if [ -f /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-    eval "$(/usr/local/bin/brew shellenv)"
+    # Homebrew setup (Apple Silicon vs Intel)
+    if [ -f /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -f /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
 fi

@@ -39,22 +39,35 @@ safe_symlink() {
     ok "linked $target → $source"
 }
 
-# Install common shell configurations
-install_common_shell_configs() {
-    bot "Installing common shell configurations..."
-    
-    # Common shell files
-    local common_files=(
-        ".profile"
-        ".shellfn"
-    )
-    
-    for file in "${common_files[@]}"; do
-        if [[ -f "common/shell/$file" ]]; then
-            running "~/$file"
-            safe_symlink "$HOME/projects/dotfiles/common/shell/$file" "$HOME/$file"
+# Initialize git submodules (oh-my-zsh, etc.)
+init_submodules() {
+    bot "Initializing git submodules..."
+
+    if [[ -f ".gitmodules" ]]; then
+        git submodule update --init --recursive
+        ok "Submodules initialized"
+    fi
+}
+
+# Install all dotfiles from homedir/
+install_homedir_dotfiles() {
+    bot "Creating symlinks for dotfiles..."
+
+    pushd homedir > /dev/null 2>&1
+
+    for file in .*; do
+        if [[ $file == "." || $file == ".." ]]; then
+            continue
         fi
+        # Skip nvim directory (handled separately)
+        if [[ $file == "nvim" ]]; then
+            continue
+        fi
+        running "~/$file"
+        safe_symlink "$HOME/projects/dotfiles/homedir/$file" "$HOME/$file"
     done
+
+    popd > /dev/null 2>&1
 }
 
 # Install Neovim configuration

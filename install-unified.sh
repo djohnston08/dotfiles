@@ -45,8 +45,11 @@ fi
 # Common installations
 bot "Installing common configurations..."
 
-# Install common shell configurations
-install_common_shell_configs
+# Initialize git submodules (oh-my-zsh, etc.)
+init_submodules
+
+# Install all dotfiles from homedir/
+install_homedir_dotfiles
 
 # Install Neovim configuration
 install_neovim_config

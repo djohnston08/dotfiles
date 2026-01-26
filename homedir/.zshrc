@@ -18,11 +18,14 @@ fi
 
 plugins=(git)
 
-source $ZSH/oh-my-zsh.sh
+# Source oh-my-zsh if available
+[[ -f "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
 
-source $HOME/.nvm/nvm.sh
+# Source nvm if installed
+[[ -s "$HOME/.nvm/nvm.sh" ]] && source "$HOME/.nvm/nvm.sh"
 
-source $HOME/projects/dotfiles/themes/headline.zsh-theme
+# Source theme
+[[ -f "$HOME/projects/dotfiles/themes/headline.zsh-theme" ]] && source "$HOME/projects/dotfiles/themes/headline.zsh-theme"
 
 source ~/.zprofile
 
@@ -32,7 +35,9 @@ unsetopt correct
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 # gag alias and completion (added by gag-install.sh)
-alias gag='/Users/djohnston/projects/gag/gag'
-# Enable bash completion compatibility for zsh
-autoload -U +X bashcompinit && bashcompinit
-source '/Users/djohnston/projects/gag/gag-completion.bash'
+if [[ -f "$HOME/projects/gag/gag" ]]; then
+    alias gag="$HOME/projects/gag/gag"
+    # Enable bash completion compatibility for zsh
+    autoload -U +X bashcompinit && bashcompinit
+    [[ -f "$HOME/projects/gag/gag-completion.bash" ]] && source "$HOME/projects/gag/gag-completion.bash"
+fi
