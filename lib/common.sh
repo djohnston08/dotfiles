@@ -44,6 +44,12 @@ init_submodules() {
     bot "Initializing git submodules..."
 
     if [[ -f ".gitmodules" ]]; then
+        # Handle partially cloned ohmyzsh directory
+        if [[ -d "./ohmyzsh" && ! -f "./ohmyzsh/oh-my-zsh.sh" ]]; then
+            warn "ohmyzsh directory exists but is incomplete, removing..."
+            rm -rf ./ohmyzsh
+        fi
+
         git submodule update --init --recursive
         ok "Submodules initialized"
     fi
