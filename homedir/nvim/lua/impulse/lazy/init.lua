@@ -71,14 +71,46 @@ return {
                 lazygit:toggle()
             end, { desc = "Lazygit" })
             vim.keymap.set("n", "<F2>", function()
+                if not claude:is_open() then
+                    claude.cmd = "claude"
+                end
                 claude:toggle()
             end, { desc = "Claude Code" })
             vim.keymap.set("i", "<F2>", function()
+                if not claude:is_open() then
+                    claude.cmd = "claude"
+                end
                 claude:toggle()
             end, { desc = "Claude Code" })
             vim.keymap.set("t", "<F2>", function()
+                if not claude:is_open() then
+                    claude.cmd = "claude"
+                end
                 claude:toggle()
             end, { desc = "Claude Code" })
+            
+            -- F3 to resume Claude in the same terminal
+            vim.keymap.set("n", "<F3>", function()
+                if claude:is_open() then
+                    claude:close()
+                end
+                claude.cmd = "claude --resume"
+                claude:open()
+            end, { desc = "Claude Code Resume" })
+            vim.keymap.set("i", "<F3>", function()
+                if claude:is_open() then
+                    claude:close()
+                end
+                claude.cmd = "claude --resume"
+                claude:open()
+            end, { desc = "Claude Code Resume" })
+            vim.keymap.set("t", "<F3>", function()
+                if claude:is_open() then
+                    claude:close()
+                end
+                claude.cmd = "claude --resume"
+                claude:open()
+            end, { desc = "Claude Code Resume" })
 
             -- Add keymap to sync terminal directory with current Neovim directory
             vim.keymap.set("n", "<leader>ts", function()
