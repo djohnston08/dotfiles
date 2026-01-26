@@ -2,14 +2,11 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	dependencies = {
 		"JoosepAlviste/nvim-ts-context-commentstring",
-		{
-			"nvim-treesitter/nvim-treesitter-textobjects",
-			lazy = true,  -- Load only when treesitter is ready
-		},
+		{ "nvim-treesitter/nvim-treesitter-textobjects" },
 	},
 
 	build = ":TSUpdate",
-	event = { "BufReadPost", "BufNewFile" },  -- Lazy load treesitter
+	event = { "BufReadPost", "BufNewFile" },
 	config = function()
 		require("nvim-treesitter.configs").setup({
 			-- A list of parser names, or "all"
@@ -49,6 +46,34 @@ return {
 				-- Using this option may slow down your editor, and you may see some duplicate highlights.
 				-- Instead of true it can also be a list of languages
 				additional_vim_regex_highlighting = { "markdown" },
+			},
+
+			-- Textobjects configuration
+			textobjects = {
+				select = {
+					enable = true,
+					lookahead = true,
+					keymaps = {
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = "@class.inner",
+						["aa"] = "@parameter.outer",
+						["ia"] = "@parameter.inner",
+					},
+				},
+				move = {
+					enable = true,
+					set_jumps = true,
+					goto_next_start = {
+						["]m"] = "@function.outer",
+						["]]"] = "@class.outer",
+					},
+					goto_previous_start = {
+						["[m"] = "@function.outer",
+						["[["] = "@class.outer",
+					},
+				},
 			},
 		})
 
