@@ -41,3 +41,4 @@ if [[ -f "$HOME/projects/gag/gag" ]]; then
     autoload -U +X bashcompinit && bashcompinit
     [[ -f "$HOME/projects/gag/gag-completion.bash" ]] && source "$HOME/projects/gag/gag-completion.bash"
 fi
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
