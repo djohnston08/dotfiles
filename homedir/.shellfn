@@ -208,3 +208,7 @@ function gwt-convert-to-bare() {
     
     cd "$current_branch"
 }
+
+sshot() {
+    screencapture -ic /dev/stdout | ssh "${1:-studio}" pbcopy
+}

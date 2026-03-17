@@ -31,7 +31,7 @@ local applicationHotkeys = {
     d = 'Reminders',       -- Voyager Layer: hyper+D
     x = 'Microsoft Excel', -- Voyager Layer: hyper+X
     b = 'Miro',            -- Voyager Layer: hyper+B
-    a = 'ChatGPT',         -- Voyager Layer: hyper+A
+    a = 'Telegram',        -- Voyager Layer: hyper+A
 
     -- Media & Utilities
     y = 'Spotify', -- Voyager Layer: hyper+Y
