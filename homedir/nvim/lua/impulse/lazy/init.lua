@@ -19,7 +19,12 @@ return {
         "tpope/vim-surround",
     },
 
-    "wakatime/vim-wakatime",
+    {
+        "wakatime/vim-wakatime",
+        cond = function()
+            return vim.fn.filereadable(os.getenv("HOME") .. "/.wakatime.cfg") == 1
+        end,
+    },
     -- Modern file explorer
     {
         "stevearc/oil.nvim",

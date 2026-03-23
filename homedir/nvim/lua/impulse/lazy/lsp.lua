@@ -10,6 +10,43 @@ local get_intelephense_license = function()
 	return string.gsub(content, "%s+", "")
 end
 
+--- Returns true if the given executable is found in PATH.
+local function has(exe)
+	return vim.fn.executable(exe) == 1
+end
+
+--- Build ensure_installed list based on available tools.
+local function get_ensure_installed()
+	local servers = {
+		{ name = "lua_ls" }, -- prebuilt binary, always works
+	}
+
+	-- Node-based servers
+	if has("node") then
+		table.insert(servers, { name = "ts_ls" })
+		table.insert(servers, { name = "vue_ls" })
+		table.insert(servers, { name = "angularls" })
+		table.insert(servers, { name = "pyright" })
+		if vim.fn.filereadable(os.getenv("HOME") .. "/intelephense/license.txt") == 1 then
+			table.insert(servers, { name = "intelephense" })
+		end
+	end
+
+	if has("go") then
+		table.insert(servers, { name = "gopls" })
+	end
+
+	if has("python3") or has("python") then
+		table.insert(servers, { name = "ruff_lsp" })
+	end
+
+	local names = {}
+	for _, s in ipairs(servers) do
+		table.insert(names, s.name)
+	end
+	return names
+end
+
 return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
@@ -46,16 +83,7 @@ return {
 		})
 		require("mason").setup()
 		require("mason-lspconfig").setup({
-			ensure_installed = {
-				"intelephense",
-				"vue_ls",
-				"lua_ls",
-				"gopls",
-				"ts_ls",
-				"angularls",
-				"pyright",
-				"ruff_lsp",
-			},
+			ensure_installed = get_ensure_installed(),
 			handlers = {
 				function(server_name) -- default handler (optional)
 					require("lspconfig")[server_name].setup({
