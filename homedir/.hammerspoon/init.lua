@@ -14,6 +14,7 @@ require("deep-work")
 require("spotify-controls")
 require("device-watchers")
 require("kate")
+require('hs.ipc')
 
 -- Global reload hotkey
 hs.hotkey.bind(hyper, "0", function()
@@ -25,4 +26,3 @@ hs.notify.new({
     title = "Hammerspoon",
     informativeText = "Modular config loaded with portrait monitor support"
 }):send()
-

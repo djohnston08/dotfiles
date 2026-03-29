@@ -57,7 +57,7 @@ local PANEL_HTML = [[
     font-size: 12px;
     color: #a6adc8;
     display: none;
-    max-height: 60px;
+    max-height: 120px;
     overflow-y: auto;
   }
   .proactive.visible { display: block; }
@@ -275,7 +275,7 @@ function KatePanel:show()
 
     -- Create webview centered on screen
     local screen = hs.screen.mainScreen():frame()
-    local w, h = 420, 380
+    local w, h = 500, 550
     local x = screen.x + (screen.w - w) / 2
     local y = screen.y + (screen.h - h) / 3  -- upper third
 
