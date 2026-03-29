@@ -153,9 +153,11 @@ local PANEL_HTML = [[
   var sendBtn = document.getElementById('send-btn');
 
   function sendAction(action, data) {
-    var url = 'hammerspoon://kate?action=' + action;
-    if (data) url += '&data=' + encodeURIComponent(data);
-    window.location.href = url;
+    try {
+      webkit.messageHandlers.kate.postMessage({ action: action, data: data || '' });
+    } catch(e) {
+      console.log('sendAction failed: ' + e);
+    }
   }
 
   function submitMessage() {
@@ -279,9 +281,22 @@ function KatePanel:show()
 
     local rect = hs.geometry.rect(x, y, w, h)
 
-    self.webview = hs.webview.new(rect, {
-        developerExtrasEnabled = false,
-    })
+    -- Set up JS→Lua message channel via usercontent
+    local uc = hs.webview.usercontent.new("kate")
+    uc:setCallback(function(msg)
+        local body = msg.body
+        if type(body) ~= "table" then return end
+        local action = body.action
+        local data = body.data
+
+        if action == "hide" then
+            self:hide()
+        elseif action == "send" and data and data ~= "" then
+            self:sendMessage(data)
+        end
+    end)
+
+    self.webview = hs.webview.new(rect, { developerExtrasEnabled = false }, uc)
 
     self.webview:windowStyle(
         hs.webview.windowMasks.borderless |
@@ -293,32 +308,6 @@ function KatePanel:show()
     self.webview:shadow(true)
     self.webview:alpha(0.96)
     self.webview:behavior(hs.drawing.windowBehaviors.canJoinAllSpaces)
-
-    -- Intercept navigation for JS->Lua communication
-    self.webview:navigationCallback(function(_action, wv, navAction)
-        local url = navAction
-        if type(navAction) == "string" and navAction:find("^hammerspoon://") then
-            local action = navAction:match("action=([^&]+)")
-            local data = navAction:match("data=([^&]+)")
-            if data then
-                data = hs.http.urlParts(navAction).queryItems and
-                    hs.http.urlParts(navAction).queryItems.data or
-                    hs.http.convertHtmlEntities(data)
-                -- URL decode
-                data = data:gsub("%%(%x%x)", function(hex)
-                    return string.char(tonumber(hex, 16))
-                end)
-            end
-
-            if action == "hide" then
-                self:hide()
-            elseif action == "send" and data then
-                self:sendMessage(data)
-            end
-            return true  -- cancel navigation
-        end
-        return true
-    end)
 
     self.webview:html(PANEL_HTML)
     self.webview:show()
