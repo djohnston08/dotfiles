@@ -229,7 +229,8 @@ local PANEL_HTML = [[
 
 function KatePanel:new(config)
     local self = setmetatable({}, KatePanel)
-    self.kate_url = config.kate_url or "http://studio:8080"
+    self.kate_url = config.kate_url or "https://studio.hedgehog-chuckwalla.ts.net"
+    self.agent_url = config.agent_url or "http://localhost:7770"
     self.visible = false
     self.webview = nil
     self.clickWatcher = nil
@@ -366,7 +367,7 @@ function KatePanel:sendMessage(text)
     -- Show thinking state
     self.webview:evaluateJavaScript("setThinking(true)")
 
-    local url = self.kate_url .. "/api/chat"
+    local url = self.agent_url .. "/chat"
     local body = hs.json.encode({
         message = text,
         platform = "hammerspoon",
@@ -549,7 +550,7 @@ end
 -- ---------------------------------------------------------------------------
 
 function KatePanel:_checkHealth()
-    local url = self.kate_url .. "/api/health"
+    local url = self.agent_url .. "/v1/health"
     hs.http.asyncGet(url, nil, function(status, _body, _headers)
         local wasConnected = self.connected
         self.connected = (status >= 200 and status < 400)
