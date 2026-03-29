@@ -372,23 +372,25 @@ function KatePanel:sendMessage(text)
     local headers = { ["Content-Type"] = "application/json" }
 
     hs.http.asyncPost(url, body, headers, function(status, responseBody, _headers)
-        if not self.webview then return end
-
-        if status < 0 or status >= 400 then
-            self.webview:evaluateJavaScript(
-                "setResponse('Sorry, I could not reach Kate. (status: " .. tostring(status) .. ")')"
-            )
-            return
-        end
-
         -- Parse SSE response — extract the done event or last paragraph
-        local finalText = self:_parseSSE(responseBody or "")
+        local finalText = ""
+        if status >= 200 and status < 400 then
+            finalText = self:_parseSSE(responseBody or "")
+        end
         if finalText == "" then
-            finalText = "(No response)"
+            finalText = (status < 0 or status >= 400)
+                and "Sorry, I could not reach Kate. (status: " .. tostring(status) .. ")"
+                or "(No response)"
         end
 
-        local escaped = finalText:gsub("\\", "\\\\"):gsub("'", "\\'"):gsub("\n", "\\n")
-        self.webview:evaluateJavaScript("setResponse('" .. escaped .. "')")
+        -- If panel is still visible, show in webview
+        if self.visible and self.webview then
+            local escaped = finalText:gsub("\\", "\\\\"):gsub("'", "\\'"):gsub("\n", "\\n")
+            self.webview:evaluateJavaScript("setResponse('" .. escaped .. "')")
+        else
+            -- Panel was closed while thinking — deliver as notification
+            self:setProactiveMessage(finalText)
+        end
     end)
 end
 
