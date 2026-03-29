@@ -2,7 +2,7 @@
 -- Desktop state reporting + outbound tools for Kate AI
 -- Install: require("kate") from ~/.hammerspoon/init.lua
 
-local KATE_URL = os.getenv("KATE_URL") or "http://studio:8080"
+local KATE_URL = os.getenv("KATE_URL") or "http://studio.hedgehog-chuckwalla.ts.net"
 local INGEST_ENDPOINT = KATE_URL .. "/api/events/ingest"
 local IDLE_THRESHOLD = 300 -- 5 minutes
 local MACHINE_NAME = hs.host.localizedName()
@@ -51,10 +51,10 @@ end
 
 local powerWatcher = hs.caffeinate.watcher.new(function(event)
     local mapping = {
-        [hs.caffeinate.watcher.systemDidWake]   = "wake",
+        [hs.caffeinate.watcher.systemDidWake]    = "wake",
         [hs.caffeinate.watcher.systemWillSleep]  = "sleep",
-        [hs.caffeinate.watcher.screensDidLock]    = "lock",
-        [hs.caffeinate.watcher.screensDidUnlock]  = "unlock",
+        [hs.caffeinate.watcher.screensDidLock]   = "lock",
+        [hs.caffeinate.watcher.screensDidUnlock] = "unlock",
     }
     local state = mapping[event]
     if state then
@@ -112,8 +112,8 @@ server:setCallback(function(method, path, _headers, body)
     -- GET /health
     if method == "GET" and path == "/health" then
         return hs.json.encode({ status = "ok", machine = MACHINE_NAME }),
-               200,
-               { ["Content-Type"] = "application/json" }
+            200,
+            { ["Content-Type"] = "application/json" }
     end
 
     -- GET /state
@@ -136,8 +136,8 @@ server:setCallback(function(method, path, _headers, body)
         local ok, data = pcall(hs.json.decode, body)
         if not ok or type(data) ~= "table" then
             return hs.json.encode({ error = "invalid JSON" }),
-                   400,
-                   { ["Content-Type"] = "application/json" }
+                400,
+                { ["Content-Type"] = "application/json" }
         end
         local message = data.message or ""
         -- Route through the panel (handles notification + menubar unread)
@@ -147,8 +147,8 @@ server:setCallback(function(method, path, _headers, body)
             hs.notify.new({ title = "Kate", informativeText = message }):send()
         end
         return hs.json.encode({ status = "ok" }),
-               200,
-               { ["Content-Type"] = "application/json" }
+            200,
+            { ["Content-Type"] = "application/json" }
     end
 
     -- POST /speak — TTS via macOS say command
@@ -156,7 +156,7 @@ server:setCallback(function(method, path, _headers, body)
         local pok, data = pcall(hs.json.decode, body)
         if not pok or type(data) ~= "table" or not data.text then
             return hs.json.encode({ ok = false, error = "invalid JSON or missing text" }),
-                   400, { ["Content-Type"] = "application/json" }
+                400, { ["Content-Type"] = "application/json" }
         end
         local sok, serr = pcall(function()
             -- Write text to a temp file to avoid shell escaping issues
@@ -180,10 +180,10 @@ server:setCallback(function(method, path, _headers, body)
         end)
         if sok then
             return hs.json.encode({ ok = true }),
-                   200, { ["Content-Type"] = "application/json" }
+                200, { ["Content-Type"] = "application/json" }
         else
             return hs.json.encode({ ok = false, error = tostring(serr) }),
-                   500, { ["Content-Type"] = "application/json" }
+                500, { ["Content-Type"] = "application/json" }
         end
     end
 
@@ -212,10 +212,10 @@ server:setCallback(function(method, path, _headers, body)
         end)
         if ok2 then
             return hs.json.encode({ ok = true, data = result }),
-                   200, { ["Content-Type"] = "application/json" }
+                200, { ["Content-Type"] = "application/json" }
         else
             return hs.json.encode({ ok = false, error = tostring(result) }),
-                   500, { ["Content-Type"] = "application/json" }
+                500, { ["Content-Type"] = "application/json" }
         end
     end
 
@@ -224,16 +224,16 @@ server:setCallback(function(method, path, _headers, body)
         local ok, data = pcall(hs.json.decode, body)
         if not ok or type(data) ~= "table" or not data.window_id then
             return hs.json.encode({ ok = false, error = "missing window_id" }),
-                   400, { ["Content-Type"] = "application/json" }
+                400, { ["Content-Type"] = "application/json" }
         end
         local w = hs.window.get(data.window_id)
         if not w then
             return hs.json.encode({ ok = false, error = "window not found" }),
-                   404, { ["Content-Type"] = "application/json" }
+                404, { ["Content-Type"] = "application/json" }
         end
         w:focus()
         return hs.json.encode({ ok = true }),
-               200, { ["Content-Type"] = "application/json" }
+            200, { ["Content-Type"] = "application/json" }
     end
 
     -- POST /windows/move — move/resize a window by ID
@@ -241,12 +241,12 @@ server:setCallback(function(method, path, _headers, body)
         local ok, data = pcall(hs.json.decode, body)
         if not ok or type(data) ~= "table" or not data.window_id then
             return hs.json.encode({ ok = false, error = "missing window_id" }),
-                   400, { ["Content-Type"] = "application/json" }
+                400, { ["Content-Type"] = "application/json" }
         end
         local w = hs.window.get(data.window_id)
         if not w then
             return hs.json.encode({ ok = false, error = "window not found" }),
-                   404, { ["Content-Type"] = "application/json" }
+                404, { ["Content-Type"] = "application/json" }
         end
         local frame = w:frame()
         frame.x = data.x or frame.x
@@ -255,7 +255,7 @@ server:setCallback(function(method, path, _headers, body)
         frame.h = data.h or frame.h
         w:setFrame(frame)
         return hs.json.encode({ ok = true }),
-               200, { ["Content-Type"] = "application/json" }
+            200, { ["Content-Type"] = "application/json" }
     end
 
     -- POST /screenshot — capture screen, save to disk, return path
@@ -268,10 +268,10 @@ server:setCallback(function(method, path, _headers, body)
         end)
         if sok then
             return hs.json.encode({ ok = true, data = { path = "/tmp/kate_screenshot.jpg" } }),
-                   200, { ["Content-Type"] = "application/json" }
+                200, { ["Content-Type"] = "application/json" }
         else
             return hs.json.encode({ ok = false, error = tostring(serr) }),
-                   500, { ["Content-Type"] = "application/json" }
+                500, { ["Content-Type"] = "application/json" }
         end
     end
 
@@ -280,7 +280,7 @@ server:setCallback(function(method, path, _headers, body)
         local pok, data = pcall(hs.json.decode, body)
         if not pok or type(data) ~= "table" or not data.query then
             return hs.json.encode({ ok = false, error = "missing query" }),
-                   400, { ["Content-Type"] = "application/json" }
+                400, { ["Content-Type"] = "application/json" }
         end
         local fok, fresult = pcall(function()
             local limit = math.min(tonumber(data.limit) or 20, 50)
@@ -296,10 +296,10 @@ server:setCallback(function(method, path, _headers, body)
         end)
         if fok then
             return hs.json.encode({ ok = true, data = { files = fresult } }),
-                   200, { ["Content-Type"] = "application/json" }
+                200, { ["Content-Type"] = "application/json" }
         else
             return hs.json.encode({ ok = false, error = tostring(fresult) }),
-                   500, { ["Content-Type"] = "application/json" }
+                500, { ["Content-Type"] = "application/json" }
         end
     end
 
@@ -320,7 +320,7 @@ server:setCallback(function(method, path, _headers, body)
             frontmost = front:name() or "unknown"
         end
         return hs.json.encode({ ok = true, data = { apps = result, frontmost = frontmost } }),
-               200, { ["Content-Type"] = "application/json" }
+            200, { ["Content-Type"] = "application/json" }
     end
 
     -- POST /apps/launch — launch or focus an application
@@ -328,18 +328,18 @@ server:setCallback(function(method, path, _headers, body)
         local ok, data = pcall(hs.json.decode, body)
         if not ok or type(data) ~= "table" or not data.name then
             return hs.json.encode({ ok = false, error = "missing name" }),
-                   400, { ["Content-Type"] = "application/json" }
+                400, { ["Content-Type"] = "application/json" }
         end
         local launched = hs.application.launchOrFocus(data.name)
         return hs.json.encode({ ok = launched }),
-               200, { ["Content-Type"] = "application/json" }
+            200, { ["Content-Type"] = "application/json" }
     end
 
     -- GET /clipboard — read clipboard text
     if method == "GET" and path == "/clipboard" then
         local text = hs.pasteboard.getContents() or ""
         return hs.json.encode({ ok = true, data = { text = text } }),
-               200, { ["Content-Type"] = "application/json" }
+            200, { ["Content-Type"] = "application/json" }
     end
 
     -- POST /photo — capture webcam photo, save to disk, return path
@@ -349,17 +349,17 @@ server:setCallback(function(method, path, _headers, body)
         end)
         if pok then
             return hs.json.encode({ ok = true, data = { path = "/tmp/kate_photo.jpg" } }),
-                   200, { ["Content-Type"] = "application/json" }
+                200, { ["Content-Type"] = "application/json" }
         else
             return hs.json.encode({ ok = false, error = tostring(perr) }),
-                   500, { ["Content-Type"] = "application/json" }
+                500, { ["Content-Type"] = "application/json" }
         end
     end
 
     -- Fallback
     return hs.json.encode({ error = "not found" }),
-           404,
-           { ["Content-Type"] = "application/json" }
+        404,
+        { ["Content-Type"] = "application/json" }
 end)
 
 server:setPort(SERVER_PORT)
@@ -376,7 +376,7 @@ print("[kate] Machine name: " .. MACHINE_NAME)
 local KatePanel = dofile(hs.configdir .. "/kate-panel.lua")
 katePanel = KatePanel:new({ kate_url = KATE_URL })
 
-hs.hotkey.bind({"cmd", "shift"}, "K", function()
+hs.hotkey.bind({ "cmd", "shift" }, "K", function()
     katePanel:toggle()
 end)
 
