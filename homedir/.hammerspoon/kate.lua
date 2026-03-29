@@ -2,7 +2,7 @@
 -- Desktop state reporting + outbound tools for Kate AI
 -- Install: require("kate") from ~/.hammerspoon/init.lua
 
-local KATE_URL = os.getenv("KATE_URL") or "http://studio.hedgehog-chuckwalla.ts.net"
+local KATE_URL = os.getenv("KATE_URL") or "https://studio.hedgehog-chuckwalla.ts.net"
 local INGEST_ENDPOINT = KATE_URL .. "/api/events/ingest"
 local IDLE_THRESHOLD = 300 -- 5 minutes
 local MACHINE_NAME = hs.host.localizedName()
