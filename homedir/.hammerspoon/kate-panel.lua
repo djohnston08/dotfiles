@@ -264,9 +264,10 @@ end
 
 function KatePanel:show()
     if self.visible and self.webview then
-        self.webview:show()
+        self.webview:show():bringToFront()
         hs.timer.doAfter(0.1, function()
             if self.webview then
+                self.webview:hswindow():focus()
                 self.webview:evaluateJavaScript("focusInput()")
             end
         end)
@@ -316,6 +317,7 @@ function KatePanel:show()
     -- Focus input after a short delay for rendering
     hs.timer.doAfter(0.15, function()
         if self.webview then
+            self.webview:hswindow():focus()
             self.webview:evaluateJavaScript("focusInput()")
             -- Restore last proactive message if any
             if self.lastProactive then
