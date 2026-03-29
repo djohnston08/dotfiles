@@ -8,19 +8,21 @@ local hyper = { "cmd", "alt", "ctrl", "shift" }
 
 -- Load all modules
 require("window-management")
-require("app-launcher") 
+require("app-launcher")
 require("portrait-layouts")
 require("deep-work")
 require("spotify-controls")
 require("device-watchers")
+require("kate")
 
 -- Global reload hotkey
 hs.hotkey.bind(hyper, "0", function()
-  hs.reload()
+    hs.reload()
 end)
 
 -- Startup notification
 hs.notify.new({
-  title="Hammerspoon", 
-  informativeText="Modular config loaded with portrait monitor support"
+    title = "Hammerspoon",
+    informativeText = "Modular config loaded with portrait monitor support"
 }):send()
+
