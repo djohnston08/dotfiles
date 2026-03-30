@@ -4,7 +4,8 @@
 -- Requires: require("hs.ipc") in init.lua (for kate-agent hs CLI bridge)
 
 local KATE_URL = os.getenv("KATE_URL") or "https://studio.hedgehog-chuckwalla.ts.net"
-local INGEST_ENDPOINT = KATE_URL .. "/api/events/ingest"
+local AGENT_URL = os.getenv("KATE_AGENT_URL") or "http://127.0.0.1:7770"
+local INGEST_ENDPOINT = AGENT_URL .. "/ingest"
 local IDLE_THRESHOLD = 300 -- 5 minutes
 local MACHINE_NAME = hs.host.localizedName()
 
@@ -33,9 +34,11 @@ local function postEvent(eventType, payload)
         return
     end
     local body = hs.json.encode({
-        event_type = eventType,
-        source = MACHINE_NAME,
-        payload = payload,
+        events = {{
+            event_type = eventType,
+            source = MACHINE_NAME,
+            payload = payload,
+        }},
     })
     local headers = { ["Content-Type"] = "application/json" }
     hs.http.asyncPost(INGEST_ENDPOINT, body, headers, function(status, _body, _headers)

@@ -230,7 +230,7 @@ local PANEL_HTML = [[
 function KatePanel:new(config)
     local self = setmetatable({}, KatePanel)
     self.kate_url = config.kate_url or "https://studio.hedgehog-chuckwalla.ts.net"
-    self.agent_url = config.agent_url or "http://localhost:7770"
+    self.agent_url = config.agent_url or "http://127.0.0.1:7770"
     self.visible = false
     self.webview = nil
     self.clickWatcher = nil
