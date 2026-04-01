@@ -14,14 +14,14 @@ local applicationHotkeys = {
     e = 'Superhuman', -- Voyager Layer: hyper+E
 
     -- Development Tools
-    p = 'PhpStorm',           -- Voyager Layer: hyper+P
+    -- p = 'PhpStorm',           -- Voyager Layer: hyper+P
     v = 'Visual Studio Code', -- Voyager Layer: hyper+V
     t = 'iTerm',              -- Voyager Layer: hyper+T
     [';'] = 'Linear',         -- Voyager Layer: hyper+;
-    o = 'YouTrack',           -- Voyager Layer: hyper+,
-    g = 'Aptakube',           -- Voyager Layer: hyper+G
-    r = 'Postman',            -- Voyager Layer: hyper+R
-    m = 'DataGrip',           -- Voyager Layer: hyper+M
+    -- o = 'YouTrack',           -- Voyager Layer: hyper+,
+    -- g = 'Aptakube',           -- Voyager Layer: hyper+G
+    -- r = 'Postman',            -- Voyager Layer: hyper+R
+    m = 'DataGrip', -- Voyager Layer: hyper+M
 
     -- Productivity & Browser
     c = 'Google Chrome',   -- Voyager Layer: hyper+C
@@ -30,7 +30,7 @@ local applicationHotkeys = {
     f = 'Fantastical',     -- Voyager Layer: hyper+F
     d = 'Reminders',       -- Voyager Layer: hyper+D
     x = 'Microsoft Excel', -- Voyager Layer: hyper+X
-    b = 'Miro',            -- Voyager Layer: hyper+B
+    -- b = 'Miro',            -- Voyager Layer: hyper+B
     a = 'Telegram',        -- Voyager Layer: hyper+A
 
     -- Media & Utilities

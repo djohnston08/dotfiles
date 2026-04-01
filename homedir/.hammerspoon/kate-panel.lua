@@ -47,27 +47,6 @@ local PANEL_HTML = [[
   }
   .title-bar button:hover { color: #f38ba8; }
 
-  /* Proactive message area */
-  .proactive {
-    padding: 8px 12px;
-    background: #1e1e2e;
-    border-bottom: 1px solid #313244;
-    border-left: 3px solid #cba6f7;
-    margin: 0;
-    font-size: 12px;
-    color: #a6adc8;
-    display: none;
-    max-height: 120px;
-    overflow-y: auto;
-  }
-  .proactive.visible { display: block; }
-  .proactive .label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #cba6f7;
-    margin-bottom: 3px;
-  }
 
   /* Response area */
   .response {
@@ -91,6 +70,24 @@ local PANEL_HTML = [[
     25% { content: '.'; }
     50% { content: '..'; }
     75% { content: '...'; }
+  }
+  .response .user-msg {
+    text-align: right;
+    color: #bac2de;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    background: #313244;
+    border-radius: 10px;
+    display: inline-block;
+    float: right;
+    clear: both;
+    max-width: 85%;
+    font-size: 12px;
+  }
+  .response .kate-msg {
+    clear: both;
+    padding: 6px 0;
+    margin-bottom: 4px;
   }
   .response p { margin-bottom: 8px; }
   .response p:last-child { margin-bottom: 0; }
@@ -136,10 +133,6 @@ local PANEL_HTML = [[
     <span>Kate</span>
     <button onclick="sendAction('hide')" title="Close">&times;</button>
   </div>
-  <div class="proactive" id="proactive">
-    <div class="label">Kate said</div>
-    <div id="proactive-text"></div>
-  </div>
   <div class="response" id="response"></div>
   <div class="input-area">
     <input type="text" id="input" placeholder="Talk to Kate..."
@@ -160,9 +153,12 @@ local PANEL_HTML = [[
     }
   }
 
+  var lastUserMessage = '';
+
   function submitMessage() {
     var text = input.value.trim();
     if (!text) return;
+    lastUserMessage = text;
     sendAction('send', text);
     input.value = '';
     input.disabled = true;
@@ -182,31 +178,37 @@ local PANEL_HTML = [[
   // Called from Lua via evaluateJavaScript
   function setThinking(on) {
     if (on) {
-      responseEl.innerHTML = '<p class="thinking">Thinking</p>';
+      // Show user message + thinking indicator
+      var userHtml = '<div class="user-msg">' + lastUserMessage + '</div>';
+      responseEl.innerHTML += userHtml + '<p class="thinking">Thinking</p>';
+      responseEl.scrollTop = responseEl.scrollHeight;
     }
   }
 
   function setResponse(text) {
     input.disabled = false;
     sendBtn.disabled = false;
+    // Remove thinking indicator, keep history
+    var thinking = responseEl.querySelector('.thinking');
+    if (thinking) thinking.remove();
     // Convert newlines to paragraphs
     var paragraphs = text.split(/\n\n+/);
-    var html = paragraphs.map(function(p) {
+    var html = '<div class="kate-msg">' + paragraphs.map(function(p) {
       return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
-    }).join('');
-    responseEl.innerHTML = html;
+    }).join('') + '</div>';
+    responseEl.innerHTML += html;
     responseEl.scrollTop = responseEl.scrollHeight;
   }
 
   function setProactiveMessage(text) {
-    var el = document.getElementById('proactive');
-    var textEl = document.getElementById('proactive-text');
-    if (text) {
-      textEl.textContent = text;
-      el.classList.add('visible');
-    } else {
-      el.classList.remove('visible');
-    }
+    if (!text) return;
+    // Insert into conversation history as a Kate message
+    var paragraphs = text.split(/\n\n+/);
+    var html = '<div class="kate-msg">' + paragraphs.map(function(p) {
+      return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+    }).join('') + '</div>';
+    responseEl.innerHTML += html;
+    responseEl.scrollTop = responseEl.scrollHeight;
   }
 
   function focusInput() {
@@ -320,11 +322,6 @@ function KatePanel:show()
         if self.webview then
             self.webview:hswindow():focus()
             self.webview:evaluateJavaScript("focusInput()")
-            -- Restore last proactive message if any
-            if self.lastProactive then
-                local escaped = self.lastProactive:gsub("\\", "\\\\"):gsub("'", "\\'"):gsub("\n", "\\n")
-                self.webview:evaluateJavaScript("setProactiveMessage('" .. escaped .. "')")
-            end
         end
     end)
 
@@ -372,63 +369,82 @@ function KatePanel:sendMessage(text)
         message = text,
         platform = "hammerspoon",
     })
-    local headers = { ["Content-Type"] = "application/json" }
 
-    hs.http.asyncPost(url, body, headers, function(status, responseBody, _headers)
-        -- Parse SSE response — extract the done event or last paragraph
-        local finalText = ""
-        if status >= 200 and status < 400 then
-            finalText = self:_parseSSE(responseBody or "")
-        end
-        if finalText == "" then
-            finalText = (status < 0 or status >= 400)
-                and "Sorry, I could not reach Kate. (status: " .. tostring(status) .. ")"
-                or "(No response)"
-        end
+    -- Use curl via hs.task for proper timeout control (120s).
+    -- hs.http.asyncPost has a short default timeout that Kate's
+    -- 30-50 second LLM responses exceed.
+    local task = hs.task.new(
+        "/usr/bin/curl",
+        function(_exitCode, stdOut, _stdErr)
+            local responseBody = stdOut or ""
+            print("[kate] Chat response: exitCode=" .. tostring(_exitCode)
+                .. " bodyLen=" .. #responseBody)
 
-        -- If panel is still visible, show in webview
-        if self.visible and self.webview then
-            local escaped = finalText:gsub("\\", "\\\\"):gsub("'", "\\'"):gsub("\n", "\\n")
-            self.webview:evaluateJavaScript("setResponse('" .. escaped .. "')")
-        else
-            -- Panel was closed while thinking — deliver as notification
-            self:setProactiveMessage(finalText)
-        end
-    end)
+            local finalText = self:_parseSSE(responseBody)
+            if finalText == "" then
+                if _exitCode ~= 0 then
+                    finalText = "Sorry, I could not reach Kate."
+                else
+                    finalText = "(No response)"
+                end
+            end
+
+            -- If panel is still visible, show in webview
+            if self.visible and self.webview then
+                local escaped = finalText:gsub("\\", "\\\\"):gsub("'", "\\'"):gsub("\n", "\\n")
+                self.webview:evaluateJavaScript("setResponse('" .. escaped .. "')")
+            else
+                -- Panel was closed while thinking — deliver as notification
+                self:setProactiveMessage(finalText)
+            end
+        end,
+        {
+            "-s",
+            "--max-time", "120",
+            "-X", "POST",
+            "-H", "Content-Type: application/json",
+            "-d", body,
+            url,
+        }
+    )
+    task:start()
 end
 
 function KatePanel:_parseSSE(body)
-    -- SSE format: "event: <type>\ndata: <text>\n\n"
-    -- Look for the "done" event first, fall back to last paragraph
+    -- Parse SSE events, handling multi-line data fields.
+    -- Prefer the "done" event (full response), fall back to
+    -- concatenating all paragraph events.
     local doneText = nil
-    local lastParagraph = nil
+    local paragraphs = {}
+    local currentEvent = nil
+    local currentData = {}
 
-    for event, data in body:gmatch("event: (%w+)\ndata: ([^\n]+)") do
-        if event == "done" then
-            doneText = data
-        elseif event == "paragraph" then
-            lastParagraph = data
-        end
-    end
-
-    -- Also handle multi-line data fields
-    if not doneText then
-        local inDone = false
-        local lines = {}
-        for line in body:gmatch("[^\n]+") do
-            if line == "event: done" then
-                inDone = true
-                lines = {}
-            elseif inDone and line:find("^data: ") then
-                table.insert(lines, line:sub(7))
-            elseif inDone and line == "" then
-                doneText = table.concat(lines, "\n")
-                break
+    for line in (body .. "\n\n"):gmatch("([^\n]*)\n") do
+        if line:find("^event: ") then
+            currentEvent = line:sub(8)
+            currentData = {}
+        elseif line:find("^data: ") then
+            table.insert(currentData, line:sub(7))
+        elseif line == "" and currentEvent then
+            -- End of SSE block
+            local text = table.concat(currentData, "\n")
+            if currentEvent == "done" then
+                doneText = text
+            elseif currentEvent == "paragraph" and text ~= "" then
+                table.insert(paragraphs, text)
             end
+            currentEvent = nil
+            currentData = {}
         end
     end
 
-    return doneText or lastParagraph or ""
+    if doneText and doneText ~= "" then
+        return doneText
+    end
+    if #paragraphs > 0 then
+        return table.concat(paragraphs, "\n\n")
+    end
+    return ""
 end
 
 -- ---------------------------------------------------------------------------
@@ -457,7 +473,7 @@ function KatePanel:setProactiveMessage(text)
         informativeText = text,
         actionButtonTitle = "Reply",
         hasActionButton = true,
-        withdrawAfter = 10,
+        withdrawAfter = 0,
     })
     n:send()
 end
